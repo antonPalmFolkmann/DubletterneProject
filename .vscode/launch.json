@@ -2,11 +2,13 @@
     
     "version": "0.2.0",
     "configurations": [
+    
         {
             "name": "Launch and Debug Standalone Blazor WebAssembly App",
             "type": "blazorwasm",
+            "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
             "request": "launch",
-            "cwd": "${workspaceFolder}/DubletterneAPP/Client"
+            "cwd": "${workspaceFolder}/DubletterneAPP/Server"
         }
     ]
 }
