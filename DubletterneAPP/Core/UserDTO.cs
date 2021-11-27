@@ -9,24 +9,22 @@ namespace Core
     public record UserCreateDTO
 {
     [StringLength(50)]
-    public string? GivenName { get; init; }
+    public string? FirstName { get; init; }
 
     [StringLength(50)]
-    public string? Surname { get; init; }
+    public string? LastName { get; init; }
 
     [StringLength(50)]
     public string? UserName { get; init; }
 
     [Range(1900, 2100)]
-    public int? FirstAppearance { get; init; }
+    public string? Email { get; init; }
 
     [StringLength(50)]
-    public string? Occupation { get; init; }
-
-    public string? City { get; init; }
+    public string? PhoneNumber { get; init; }
 
     [Required]
-    public ISet<string> Powers { get; init; } = null!;
+    public ISet<ResourceDTO> Powers { get; init; } = null!;
 }
 
 public record UserUpdateDTO : UserCreateDTO
