@@ -19,6 +19,11 @@ namespace Infrastructure
             throw new NotImplementedException();
         }
 
+        public Task<IReadOnlyCollection<ResourceDTO>> ReadAllByAuthorAsync(UserDTO user)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<ResourceDTO> ReadAsync(int resourceID)
         {
             throw new NotImplementedException();
