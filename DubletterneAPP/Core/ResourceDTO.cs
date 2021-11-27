@@ -2,35 +2,46 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Core
 {
-    public record ResourceDTO(int Id, string? GivenName, string? Surname, string? UserName);
+    public record ResourceDTO
+    {
+        public int Id { get; set; }
+        public string? Title { get; set; }
+        public string? Author { get; set; }
+    }
 
-    public record ResourceDetailsDTO(int Id, string? GivenName, string? Surname, string? UserName, string? City, int? FirstAppearance, string? Occupation, string? ImageUrl, IReadOnlySet<string> Powers) : ResourceDTO(Id, GivenName, Surname, UserName);
-
+    public record ResourceDetailsDTO : ResourceDTO
+    {
+        public DateTime? Created { get; set; }
+        public DateTime? Updated { get; set; }
+        public List<string>? TextParagraphs { get; set; }
+        public string? ImageUrl { get; set; }
+    }
     public record ResourceCreateDTO
-{
-    [StringLength(50)]
-    public string? GivenName { get; init; }
+    {
+        [StringLength(50)]
+        [MinLength(1)]
+        [Required]
+        public string? Title { get; set; }
 
-    [StringLength(50)]
-    public string? Surname { get; init; }
+        [Required]
+        public String? Author { get; set; }
 
-    [StringLength(50)]
-    public string? UserName { get; init; }
+        [Required]
+        [DataType(DataType.DateTime)]
+        public DateTime? Created { get; set; }
 
-    [Range(1900, 2100)]
-    public int? FirstAppearance { get; init; }
+        [Required]
+        [MinLength(1)]
+        public List<string>? TextParagraphs { get; set; }
 
-    [StringLength(50)]
-    public string? Occupation { get; init; }
+        [Url]
+        [Required]
+        public string? ImageUrl { get; set; }
+    }
 
-    public string? City { get; init; }
-
-    [Required]
-    public ISet<string> Powers { get; init; } = null!;
-}
-
-public record ResourceUpdateDTO : ResourceCreateDTO
-{
-    public int Id { get; init; }
-}
+    public record ResourceUpdateDTO : ResourceCreateDTO
+    {
+        public int Id { get; init; }
+        public DateTime Updated { get; init; }
+    }
 }
