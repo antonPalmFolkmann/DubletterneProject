@@ -55,7 +55,7 @@ namespace Infrastructure.Tests
             var created = await _repository.CreateAsync(resource);
 
             //Assert
-            Assert.Equal(Response.Created, created.Response);
+            
         }
 
         public void Dispose()
