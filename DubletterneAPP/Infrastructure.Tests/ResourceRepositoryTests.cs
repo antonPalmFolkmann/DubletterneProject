@@ -24,9 +24,9 @@ namespace Infrastructure.Tests
             {
                 Id = 1,
                 Title = "Hello, world!",
-                Author = "AntonFolkmann",
+                User = "AntonFolkmann",
                 Created = DateTime.Today,
-                TextParagraphs = new List<string> { "string1", "string2", "...", "stringN" },
+                TextParagraphs =  new List<TextParagraph>{new TextParagraph("Hello!"), new TextParagraph("How are you?")},
                 ImageUrl = "image.com"
             };
 
@@ -44,23 +44,30 @@ namespace Infrastructure.Tests
             //Arrange
             var resource = new ResourceCreateDTO
             {
-                Title = "Hello there!",
-                Author = "Alexander",
+                Title = "Foo",
+                User = "Bar",
                 Created = DateTime.Today,
-                TextParagraphs = new List<string> { "string1", "string2", "...", "stringN" },
+                TextParagraphs = new HashSet<string> { "string1", "string2", "...", "stringN" },
                 ImageUrl = "image.com"
             };
 
             //Act
             var created = await _repository.CreateAsync(resource);
-
-            //Assert
             
+            //Assert
+            Assert.Equal(Response.Created, created.Item1);
+            Assert.Equal(resource.Title, created.Item2.Title);
+            Assert.Equal(resource.User, created.Item2.User);
+            Assert.Equal(resource.Created, created.Item2.Created);
+            Assert.Equal(resource.TextParagraphs, created.Item2.TextParagraphs);
+            Assert.Equal(resource.ImageUrl, created.Item2.ImageUrl);
         }
+
+   
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _context.Dispose();
         }
     }
 }

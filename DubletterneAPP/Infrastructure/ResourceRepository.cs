@@ -1,4 +1,5 @@
 using Core;
+using System.Linq;
 
 namespace Infrastructure
 {
@@ -16,9 +17,9 @@ namespace Infrastructure
             var entity = new Resource
             {
                 Title = resource.Title,
-                Author = resource.Author,
+                User = resource.User,
                 Created = resource.Created, 
-                TextParagraphs = resource.TextParagraphs,
+                TextParagraphs = GetParagraphs(resource.TextParagraphs).ToList(),
                 ImageUrl = resource.ImageUrl
             };
             var response = Response.Created;
@@ -26,10 +27,10 @@ namespace Infrastructure
             var resourceDetailsDTO = new ResourceDetailsDTO{
                 Id = entity.Id,
                 Title = entity.Title,
-                Author = entity.Author,
+                User = entity.User,
                 Created = entity.Created,
                 Updated = null,
-                TextParagraphs = entity.TextParagraphs,
+                TextParagraphs = entity.TextParagraphs.Select(p => p.Paragraph).ToList(),
                 ImageUrl = entity.ImageUrl 
             };
 
@@ -38,6 +39,14 @@ namespace Infrastructure
             await _context.SaveChangesAsync();
 
             return (response, resourceDetailsDTO);
+        }
+
+        private IEnumerable<TextParagraph> GetParagraphs(ICollection<string>? textParagraphs)
+        {
+            foreach (var paragraph in textParagraphs)
+            {
+                yield return new TextParagraph(paragraph);
+            }
         }
 
         public Task<Response> DeleteAsync(int resourceID)
