@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+
 using Core;
 
 namespace Infrastructure;
@@ -22,4 +23,5 @@ public class LearningContext : DbContext, ILearningContext
                     .HasIndex(t => t.Id)
                     .IsUnique();
     }
+
 }

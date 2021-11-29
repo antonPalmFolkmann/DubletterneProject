@@ -1,0 +1,10 @@
+Search Request Form (and reader)
+Logic 
+Validater
+Search Notice
+
+
+The users’ search terms inputted in the search bar must consist of danish letters, numbers andcommon symbols. (, . / () [] : ; - ! ? )
+
+
+[a-zA-ZæøåÆØÅ,\.\/\\\(\)\[\]\!\?\s]{0,127}

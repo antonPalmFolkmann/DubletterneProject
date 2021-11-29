@@ -1,4 +1,6 @@
+
 using System.ComponentModel.DataAnnotations;
+
 namespace Infrastructure
 {
     public class Resource
