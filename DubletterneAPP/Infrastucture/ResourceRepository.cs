@@ -4,9 +4,40 @@ namespace Infrastructure
 {
     public class ResourceRepository : IResourceRepository
     {
-        public Task<(Response, ResourceDetailsDTO)> CreateAsync(ResourceCreateDTO resource)
+        private ILearningContext _context;
+
+        public ResourceRepository(ILearningContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+
+        public async Task<(Response, ResourceDetailsDTO)> CreateAsync(ResourceCreateDTO resource)
+        {
+            var entity = new Resource
+            {
+                Title = resource.Title,
+                Author = resource.Author,
+                Created = resource.Created, 
+                TextParagraphs = resource.TextParagraphs,
+                ImageUrl = resource.ImageUrl
+            };
+            var response = Response.Created;
+            
+            var resourceDetailsDTO = new ResourceDetailsDTO{
+                Id = entity.Id,
+                Title = entity.Title,
+                Author = entity.Author,
+                Created = entity.Created,
+                Updated = null,
+                TextParagraphs = entity.TextParagraphs,
+                ImageUrl = entity.ImageUrl 
+            };
+
+            _context.Resources.Add(entity);
+
+            await _context.SaveChangesAsync();
+
+            return (response, resourceDetailsDTO);
         }
 
         public Task<Response> DeleteAsync(int resourceID)
@@ -23,7 +54,7 @@ namespace Infrastructure
             throw new NotImplementedException();
         }
         
-        public Task<ResourceDTO> ReadAsync(int resourceID)
+        public Task<ResourceDetailsDTO> ReadAsync(int resourceID)
         {
             throw new NotImplementedException();
         }

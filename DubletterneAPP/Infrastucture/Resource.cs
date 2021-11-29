@@ -17,7 +17,6 @@ namespace Infrastructure
         [DataType(DataType.DateTime)]
         public DateTime? Created { get; set; }
 
-        [Required]
         [DataType(DataType.DateTime)]
         public DateTime? Updated { get; set; }
 
