@@ -2,33 +2,49 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Core
 {
-    public record UserDTO(int Id, string? GivenName, string? Surname, string? UserName);
+    public record UserDTO
+    {
+        public int Id { get; set; }
+        public string? UserName { get; set; }
+    }
 
-    public record UserDetailsDTO(int Id, string? GivenName, string? Surname, string? UserName, string? City, int? FirstAppearance, string? Occupation, string? ImageUrl, IReadOnlySet<string> Powers) : UserDTO(Id, GivenName, Surname, UserName);
+    public record UserDetailsDTO : UserDTO
+    {
+        public string? FirstName { get; set; }
+        public string? Surname { get; set; }
+        public DateTime? Created { get; set; }
+        public string? Email { get; set; }
+        public IReadOnlySet<string> Resources { get; set; } = null!;
+    }
 
     public record UserCreateDTO
-{
-    [StringLength(50)]
-    public string? FirstName { get; init; }
+    {
+        [StringLength(50)]
+        [MinLength(1)]
+        [Required]
+        public string? FirstName { get; init; }
 
-    [StringLength(50)]
-    public string? LastName { get; init; }
+        [StringLength(50)]
+        [MinLength(1)]
+        [Required]
+        public string? Surname { get; init; }
 
-    [StringLength(50)]
-    public string? UserName { get; init; }
+        [StringLength(50)]
+        [MinLength(1)]
+        [Required]
+        public string? UserName { get; init; }
 
-    [Range(1900, 2100)]
-    public string? Email { get; init; }
+        [Required]
+        [DataType(DataType.DateTime)]
+        public DateTime Created { get; init; }
 
-    [StringLength(50)]
-    public string? PhoneNumber { get; init; }
+        [EmailAddress]
+        [Required]
+        public string? Email { get; init; }
+    }
 
-    [Required]
-    public ISet<ResourceDTO> Powers { get; init; } = null!;
-}
-
-public record UserUpdateDTO : UserCreateDTO
-{
-    public int Id { get; init; }
-}
+    public record UserUpdateDTO : UserCreateDTO
+    {
+        public int Id { get; init; }
+    }
 }
