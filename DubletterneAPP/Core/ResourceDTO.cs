@@ -6,14 +6,14 @@ namespace Core
     {
         public int Id { get; set; }
         public string? Title { get; set; }
-        public string? Author { get; set; }
+        public string? User { get; set; }
     }
 
     public record ResourceDetailsDTO : ResourceDTO
     {
         public DateTime? Created { get; set; }
         public DateTime? Updated { get; set; }
-        public List<string>? TextParagraphs { get; set; }
+        public ICollection<string>? TextParagraphs { get; set; }
         public string? ImageUrl { get; set; }
     }
     public record ResourceCreateDTO
@@ -24,7 +24,7 @@ namespace Core
         public string? Title { get; set; }
 
         [Required]
-        public String? Author { get; set; }
+        public String? User { get; set; }
 
         [Required]
         [DataType(DataType.DateTime)]
@@ -32,7 +32,7 @@ namespace Core
 
         [Required]
         [MinLength(1)]
-        public List<string>? TextParagraphs { get; set; }
+        public ICollection<string>? TextParagraphs { get; set; }
 
         [Url]
         [Required]

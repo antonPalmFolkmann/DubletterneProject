@@ -3,6 +3,7 @@ namespace Infrastructure
 {
     public class Resource
     {
+        [Key]
         public int Id { get; init; }
 
         [StringLength(50)]
@@ -11,7 +12,7 @@ namespace Infrastructure
         public string? Title { get; set; }
 
         [Required]
-        public String? Author { get; set; }
+        public string? User { get; set; }
 
         [Required]
         [DataType(DataType.DateTime)]
@@ -22,7 +23,7 @@ namespace Infrastructure
 
         [Required]
         [MinLength(1)]
-        public List<string>? TextParagraphs { get; set; }
+        public IEnumerable<TextParagraph>? TextParagraphs { get; set; }
 
         [Url]
         [Required]
