@@ -1,5 +1,5 @@
 
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
 using Xunit;

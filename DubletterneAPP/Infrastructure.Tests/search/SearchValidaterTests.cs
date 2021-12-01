@@ -26,17 +26,6 @@ namespace Infrastructure.Tests.Search{
 
         Assert.False(result);
     }
-
-
-
-
-
-
-
-
-
-
-
         private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)

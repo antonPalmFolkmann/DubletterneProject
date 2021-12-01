@@ -8,3 +8,55 @@ The users’ search terms inputted in the search bar must consist of danish lett
 
 
 [a-zA-ZæøåÆØÅ,\.\/\\\(\)\[\]\!\?\s]{0,127}
+
+Logic: BrainStrom
+Record Resourses+Points
+fundede matches = Array af records
+SearchTerm = Array af strings
+SearchParameter = ennum
+
+SearchMAIN(string searchTerm, ennum searchParameter){
+    if !SearchValidater.ValidateSearchTermCharacters(searchTerm){
+
+    }
+
+    SearchTerm := splitStringAtSpace(searchTerm)
+    SearchParameter := searchParameter
+
+    switch SearchParameter
+        case Users
+            f
+        case Catagory
+            f
+        case Resourse
+            searchResourse()
+}
+
+splitStringAtSpace() returns (Array af strings)
+
+searchUser(){
+
+}
+
+searchCatagory(){
+
+}
+
+searchResourse(){
+    for s string : SearchTerm
+    {
+        queryDatabaseResourseContainingX
+    }
+}
+
+queryDatabaseTitlesContainingX () return (Array af titler){
+    call databaseManagers API 
+}
+
+queryDatabaseCatagoryContainingX () return (Array af titler){
+    call databaseManagers API 
+}
+
+queryDatabaseUsersContainingX () return (Array af titler){
+    call databaseManagers API 
+}
