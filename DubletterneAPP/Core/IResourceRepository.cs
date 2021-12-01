@@ -2,7 +2,7 @@ namespace Core
 {
     public interface IResourceRepository
     {
-        Task<(Response, ResourceDetailsDTO)> CreateAsync(ResourceCreateDTO resource);
+        Task<(Response, int resourceID)> CreateAsync(ResourceCreateDTO resource);
         Task<ResourceDetailsDTO> ReadAsync(int resourceID);
         Task<IReadOnlyCollection<ResourceDTO>> ReadAllByAuthorAsync(UserDTO user);
         Task<IReadOnlyCollection<ResourceDTO>> ReadAllAsync();

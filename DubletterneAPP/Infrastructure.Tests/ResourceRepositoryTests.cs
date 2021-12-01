@@ -47,7 +47,7 @@ namespace Infrastructure.Tests
                 Title = "Foo",
                 User = "Bar",
                 Created = DateTime.Today,
-                TextParagraphs = new HashSet<string> { "string1", "string2", "...", "stringN" },
+                TextParagraphs = new List<string> { "string1", "string2", "...", "stringN" },
                 ImageUrl = "image.com"
             };
 
@@ -56,14 +56,29 @@ namespace Infrastructure.Tests
             
             //Assert
             Assert.Equal(Response.Created, created.Item1);
-            Assert.Equal(resource.Title, created.Item2.Title);
-            Assert.Equal(resource.User, created.Item2.User);
-            Assert.Equal(resource.Created, created.Item2.Created);
-            Assert.Equal(resource.TextParagraphs, created.Item2.TextParagraphs);
-            Assert.Equal(resource.ImageUrl, created.Item2.ImageUrl);
+            Assert.Equal(2, created.Item2);
         }
 
-   
+        [Fact]
+        public async void CreateAsync_given_duplicate_Resource_returns_Conflict()
+        {
+            //Arrange
+            var resource = new ResourceCreateDTO
+            {
+                Title = "Hello, world!",
+                User = "AntonFolkmann",
+                Created = DateTime.Today,
+                TextParagraphs = new List<string> { "Hello!", "How are you?" },
+                ImageUrl = "image.com"
+            };
+
+            //Act
+            var created = await _repository.CreateAsync(resource);
+            
+            //Assert
+            Assert.Equal(Response.Conflict, created.Item1);
+            Assert.Equal(-1, created.Item2);
+        }
 
         public void Dispose()
         {

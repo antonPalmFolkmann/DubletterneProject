@@ -1,4 +1,5 @@
 using Core;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 
@@ -14,33 +15,36 @@ namespace Infrastructure
             _context = context;
         }
 
-        public async Task<(Response, ResourceDetailsDTO)> CreateAsync(ResourceCreateDTO resource)
+        public async Task<(Response, int resourceID)> CreateAsync(ResourceCreateDTO resource)
         {
+            var ResourceWithSameName = from c in _context.Resources
+                                       where c.Title == resource.Title
+                                       select new ResourceDTO{
+                                           Id = c.Id,
+                                           Title = c.Title,
+                                           User = c.User
+                                       };
+
+
+            if (ResourceWithSameName.Count() != 0)
+            {
+                return (Response.Conflict, -1);
+            }
+
             var entity = new Resource
             {
                 Title = resource.Title,
                 User = resource.User,
-                Created = resource.Created, 
+                Created = resource.Created,
                 TextParagraphs = GetParagraphs(resource.TextParagraphs).ToList(),
                 ImageUrl = resource.ImageUrl
-            };
-            var response = Response.Created;
-            
-            var resourceDetailsDTO = new ResourceDetailsDTO{
-                Id = entity.Id,
-                Title = entity.Title,
-                User = entity.User,
-                Created = entity.Created,
-                Updated = null,
-                TextParagraphs = entity.TextParagraphs.Select(p => p.Paragraph).ToList(),
-                ImageUrl = entity.ImageUrl 
             };
 
             _context.Resources.Add(entity);
 
             await _context.SaveChangesAsync();
 
-            return (response, resourceDetailsDTO);
+            return (Response.Created, entity.Id);
         }
 
         private IEnumerable<TextParagraph> GetParagraphs(ICollection<string>? textParagraphs)
@@ -64,7 +68,7 @@ namespace Infrastructure
         {
             throw new NotImplementedException();
         }
-        
+
         public Task<ResourceDetailsDTO> ReadAsync(int resourceID)
         {
             throw new NotImplementedException();

@@ -18,9 +18,9 @@ namespace Core
     }
     public record ResourceCreateDTO
     {
-        [StringLength(50)]
-        [MinLength(1)]
         [Required]
+        [StringLength(50)]
+        [MinLength(5)]
         public string? Title { get; set; }
 
         [Required]
