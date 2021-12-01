@@ -6,6 +6,7 @@ namespace Infrastructure
     {
         DbSet<User> Users { get; }
         DbSet<Resource> Resources { get; }
+        DbSet<TextParagraph> TextParagraphs {get;}
         int SaveChanges();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
