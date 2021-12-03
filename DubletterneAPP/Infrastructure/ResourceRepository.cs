@@ -1,4 +1,5 @@
 using Core;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -55,9 +56,19 @@ namespace Infrastructure
             }
         }
 
-        public Task<Response> DeleteAsync(int resourceID)
+        public async Task<Response> DeleteAsync(int resourceID)
         {
-            throw new NotImplementedException();
+            var entity = await _context.Resources.FindAsync(resourceID);
+            
+            if (entity == null)
+            {
+                return Response.NotFound;
+            }
+
+            _context.Resources.Remove(entity);
+            await _context.SaveChangesAsync();
+
+            return Response.Deleted;
         }
 
         public Task<IReadOnlyCollection<ResourceDTO>> ReadAllAsync()
@@ -69,14 +80,47 @@ namespace Infrastructure
             throw new NotImplementedException();
         }
 
-        public Task<ResourceDetailsDTO> ReadAsync(int resourceID)
+        public async Task<ResourceDetailsDTO> ReadAsync(int resourceID)
         {
-            throw new NotImplementedException();
+            var response = await _context.Resources
+                                    .Where(c => c.Id != resourceID)
+                                    .Select(c => new ResourceDetailsDTO
+                                    {
+                                        Id = c.Id,
+                                        Title = c.Title,
+                                        User = c.User
+                                    }).FirstAsync();
+            return response;
         }
 
-        public Task<Response> UpdateAsync(ResourceDTO resource)
+        public async Task<Response> UpdateAsync(int id, ResourceDTO resource)
         {
-            throw new NotImplementedException();
+            var conflict = await _context.Resources
+                                    .Where(c => c.Title == resource.Title)
+                                    .Where(c => c.User == resource.User)
+                                    .Select(c => new ResourceDTO
+                                    {Id = c.Id,
+                                    Title = c.Title, 
+                                    User = c.User
+                                    }).AnyAsync();
+                                    
+            if (conflict)
+            {
+                return Response.Conflict;
+            }
+
+            var entity = await _context.Resources.FindAsync(resource.Id);
+
+            if (entity == null)
+            {
+                return Response.NotFound;
+            }
+
+            entity.Title = resource.Title;
+
+            await _context.SaveChangesAsync();
+
+            return Response.Updated;
         }
     }
 }
