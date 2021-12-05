@@ -60,7 +60,7 @@ namespace Infrastructure
             throw new NotImplementedException();
         }
 
-        public Task<IReadOnlyCollection<ResourceDTO>> ReadAllAsync()
+        public Task<IReadOnlyCollection<ResourceDTO>> ReadAsync()
         {
             throw new NotImplementedException();
         }
