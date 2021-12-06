@@ -26,7 +26,7 @@ namespace Infrastructure.Tests
             {
                 Id = 1,
                 Title = "Hello, world!",
-                User = "AntonFolkmann",
+                User = "UserFuser",
                 Created = DateTime.Today,
                 TextParagraphs =  new List<TextParagraph>{new TextParagraph("Hello!"), new TextParagraph("How are you?")},
                 ImageUrl = "image.com"
@@ -78,7 +78,7 @@ namespace Infrastructure.Tests
             var resource = new ResourceCreateDTO
             {
                 Title = "Hello, world!",
-                User = "AntonFolkmann",
+                User = "UserFuser",
                 Created = DateTime.Today,
                 TextParagraphs = new List<string> { "Hello!", "How are you?" },
                 ImageUrl = "image.com"
@@ -151,8 +151,7 @@ namespace Infrastructure.Tests
             Assert.Equal(Response.NotFound, updated);
         }
 
-        //Not working, can't change title to already taken string
-        /*[Fact]
+        [Fact]
         public async Task UpdateAsync_existing_Title_returns_Conflict()
         {
             var resource = new ResourceUpdateDTO
@@ -169,23 +168,31 @@ namespace Infrastructure.Tests
             var response = await _repository.UpdateAsync(2, resource);
 
             Assert.Equal(Response.Conflict, response);
-        }*/
+        }
 
         [Fact]
         public async Task ReadAsync_returns_Resource_with_given_Id()
         {
-            var entity = await _repository.ReadAsync(2);
+            var resource = new Resource
+            {
+                Id = 2,
+                Title = "Liberate",
+                User = "Animals",
+                Created = DateTime.Today,
+                TextParagraphs =  new List<TextParagraph>{new TextParagraph("Gutentag"), new TextParagraph("Come stai?")},
+                ImageUrl = "image2.com"
+            };
 
-            var resource = entity;
+            var actual = await _repository.ReadAsync(2);
 
-            Assert.Equal(resource, entity);
+            Assert.Equal(resource.Id, actual.Value.Id);
         }
         
         [Fact]
         public async Task ReadAsync_returns_None_when_no_Resource_has_given_Id()
         {
-            var entity = await _repository.ReadAsync(69);
-            Assert.True(entity == null);
+            var option = await _repository.ReadAsync(69);
+            Assert.True(option.IsNone);
         }
         
         [Fact]
@@ -194,7 +201,7 @@ namespace Infrastructure.Tests
              var resources = await _repository.ReadAllAsync();
 
              Assert.Collection(resources, 
-             resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!", User = "AntonFolkmann"}, resource),
+             resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!", User = "UserFuser"}, resource),
              resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate", User = "Animals"}, resource)
              );
         }
