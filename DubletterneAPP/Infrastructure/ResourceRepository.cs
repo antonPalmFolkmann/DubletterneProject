@@ -32,8 +32,9 @@ namespace Infrastructure
                 Title = resource.Title,
                 User = resource.User,
                 Created = resource.Created,
-                TextParagraphs = GetParagraphs(resource.TextParagraphs).ToList(),
+                TextParagraphs = await GetTextParagraphsAsync(resource.TextParagraphs).ToListAsync(),
                 ImageUrl = resource.ImageUrl
+
             };
 
             _context.Resources.Add(entity);
@@ -43,36 +44,85 @@ namespace Infrastructure
             return (Response.Created, entity.Id);
         }
 
-        private IEnumerable<TextParagraph> GetParagraphs(ICollection<string>? textParagraphs)
+        public async Task<Response> DeleteAsync(int resourceID)
         {
-            foreach (var paragraph in textParagraphs)
+            var entity = await _context.Resources.FindAsync(resourceID);
+            
+            if (entity == null)
             {
-                yield return new TextParagraph(paragraph);
+                return Response.NotFound;
             }
+
+            _context.Resources.Remove(entity);
+            await _context.SaveChangesAsync();
+
+            return Response.Deleted;
         }
 
-        public Task<Response> DeleteAsync(int resourceID)
+        public async Task<IReadOnlyCollection<ResourceDTO>> ReadAllAsync()
         {
-            throw new NotImplementedException();
+            var resources = (await _context.Resources
+                                 .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title, User = r.User})
+                                 .ToListAsync())
+                                 .AsReadOnly();
+            return resources;
         }
 
-        public Task<IReadOnlyCollection<ResourceDTO>> ReadAllAsync()
-        {
-            throw new NotImplementedException();
-        }
         public Task<IReadOnlyCollection<ResourceDTO>> ReadAllByAuthorAsync(UserDTO user)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ResourceDetailsDTO> ReadAsync(int resourceID)
+        public async Task<Option<ResourceDetailsDTO>> ReadAsync(int resourceID)
         {
-            throw new NotImplementedException();
+            var resource = await _context.Resources
+                                .Where(r => r.Id == resourceID)
+                                .Select(r => new ResourceDetailsDTO{
+                                    Id = r.Id,
+                                    Title = r.Title,
+                                    User = r.User,
+                                    Created = r.Created,
+                                    Updated = r.Updated,
+                                    TextParagraphs = r.TextParagraphs.Select(p => p.Paragraph).ToList(),
+                                    ImageUrl = r.ImageUrl
+                                }).FirstOrDefaultAsync();
+            return resource;
         }
 
-        public Task<Response> UpdateAsync(ResourceDTO resource)
+        public async Task<Response> UpdateAsync(int id, ResourceUpdateDTO resource)
         {
-            throw new NotImplementedException();
+            var entity = await _context.Resources.FirstOrDefaultAsync(c => c.Id == resource.Id);
+                                    
+            if (entity == null) return Response.NotFound;
+
+            var conflict = await _context.Resources
+                                         .Where(r => r.Id != id)
+                                         .Where(r => r.Title == resource.Title)
+                                         .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title, User = r.User})
+                                         .AnyAsync();
+            
+            if (conflict) return Response.Conflict;
+
+            entity.Title = resource.Title;
+            entity.User = resource.User;
+            entity.Created  = resource.Created;
+            entity.TextParagraphs = await GetTextParagraphsAsync(resource.TextParagraphs).ToListAsync();
+            entity.Updated = DateTime.Now;
+            entity.ImageUrl = resource.ImageUrl;
+
+            await _context.SaveChangesAsync();
+
+            return Response.Updated;
+        }
+
+        private async IAsyncEnumerable<TextParagraph> GetTextParagraphsAsync(IEnumerable<string> textParagraphs)
+        {
+            var existing = await _context.TextParagraphs.Where(t => textParagraphs.Contains(t.Paragraph)).ToDictionaryAsync(t => t.Paragraph);
+            
+            foreach (var item in textParagraphs)
+            {
+                yield return existing.TryGetValue(item, out var t) ? t : new TextParagraph(item);
+            }
         }
     }
 }
