@@ -1,0 +1,69 @@
+@page "/resources/{resourceId:int}/edit"
+@attribute [Authorize]
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h1>Edit Resource</h1>
+
+<hr />
+
+@if (resource != null)
+{
+    <EditForm Model="@resource" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            <label for="Title">Title</label>
+            <InputText id="Title" @bind-Value="resource.Title" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="User">User</label>
+            <InputText id="User" @bind-Value="resource.User" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="Image URL">Image URL</label>
+            <InputText id="ImageUrl" @bind-Value="resource.ImageUrl" class="form-control" />
+        </div>
+        <div class="form-group">
+            <br />
+            <button type="submit" class="btn btn-success">Update</button>
+            <button type="button" class="btn btn-primary" @onclick="Cancel">Cancel</button>
+        </div>
+    </EditForm>
+}
+
+@code {
+    private ResourceUpdateDTO resource = null!;
+
+    [Parameter]
+    public int ResourceId { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ResourceId != 0)
+        {
+            resource = await Http.GetFromJsonAsync<ResourceUpdateDTO>($"api/Resources/{ResourceId}") ?? new();
+        }
+
+        await base.OnParametersSetAsync();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var response = await Http.PutAsJsonAsync($"api/Resources/{ResourceId}", resource);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var uri = $"{NavigationManager.BaseUri}resources/{ResourceId}";
+
+            NavigationManager.NavigateTo(uri);
+        }
+    }
+
+    private void Cancel()
+    {
+        var uri = $"{NavigationManager.BaseUri}resources/{ResourceId}";
+
+        NavigationManager.NavigateTo(uri);
+    }
+} 

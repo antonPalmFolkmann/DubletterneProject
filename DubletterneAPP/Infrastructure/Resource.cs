@@ -5,7 +5,6 @@ namespace Infrastructure
 {
     public class Resource
     {
-        [Key]
         public int Id { get; init; }
 
         [Required]
@@ -24,8 +23,7 @@ namespace Infrastructure
         public DateTime? Updated { get; set; }
 
         [Required]
-        [MinLength(1)]
-        public IEnumerable<TextParagraph>? TextParagraphs { get; set; }
+        public IEnumerable<TextParagraph> TextParagraphs { get; set; } = new List<TextParagraph>();
 
         [Url]
         [Required]

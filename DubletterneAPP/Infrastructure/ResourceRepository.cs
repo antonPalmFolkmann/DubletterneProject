@@ -49,14 +49,6 @@ namespace Infrastructure
             return (Response.Created, entity.Id);
         }
 
-        /*
-        private IEnumerable<TextParagraph> GetParagraphs(ICollection<string>? textParagraphs)
-        {
-            foreach (var textParagraph in textParagraphs)
-            {
-                yield return new TextParagraph(textParagraph);
-            }
-        }*/
 
         public async Task<Response> DeleteAsync(int resourceID)
         {
