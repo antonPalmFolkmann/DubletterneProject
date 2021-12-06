@@ -47,7 +47,7 @@ namespace Infrastructure
             return (Response.Created, entity.Id);
         }
 
-        private IEnumerable<TextParagraph> GetParagraphs(ICollection<string>? textParagraphs)
+        private IEnumerable<TextParagraph> GetParagraphs(ICollection<string> textParagraphs)
         {
             foreach (var paragraph in textParagraphs)
             {

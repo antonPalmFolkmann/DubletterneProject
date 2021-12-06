@@ -1,11 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web.Resource;
-using DubletterneAPP.Shared;
-using Core;
-using System.Collections.ObjectModel;
-using System.Text.Json;
-
 namespace DubletterneAPP.Server.Controllers;
 
 [Authorize]
@@ -23,15 +15,8 @@ public class ResourcesController : ControllerBase
         _repository = repository;
     }
 
-    [AllowAnonymous]
-    [HttpGet]
-    public async Task<IEnumerable<ResourceDTO>> Get()
-    {
-        var listofresources = await Task.Run(() => GetLocallyCreatedResourceDTOs());
-        return listofresources;
-    }
-
-    private IEnumerable<ResourceDTO> GetLocallyCreatedResourceDTOs()
+    [HttpGet("Resources")]
+    public IEnumerable<ResourceDTO> Get()
     {
         var list = Enumerable.Range(1, 5).Select(index => new ResourceDTO
         {
@@ -41,9 +26,6 @@ public class ResourcesController : ControllerBase
         })
         .ToArray();
 
-        string jsonString = JsonSerializer.Serialize(list[0]);
-
-        Console.WriteLine(jsonString);
         return list;
     }
 

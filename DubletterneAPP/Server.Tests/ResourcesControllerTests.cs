@@ -7,11 +7,14 @@ using Microsoft.Extensions.Logging;
 using DubletterneAPP.Server.Controllers;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 
 namespace Server.Tests.Controllers;
 
 public class ResourcesControllerTests 
 {
+    /*
     [Fact]
     public async Task Get_returns_Resources_from_repo()
     {
@@ -54,4 +57,27 @@ public class ResourcesControllerTests
                 User = "User id 5"} , resource)
         );
     }
+    */
+
+/*
+    [Fact]
+    public void TestName()
+    {
+        // Given
+        var list = Enumerable.Range(1, 5).Select(index => new ResourceDTO
+        {
+            Id = index,
+            User = String.Format("User id {0}", index),
+            Title = String.Format("Title number {0}", index)
+        })
+        .ToArray();
+
+        //When
+        string jsonString = JsonSerializer.Serialize(list);
+        Console.WriteLine(jsonString);
+    
+        // Then
+        Assert.Equal("hello",jsonString);
+    }
+    */
 }
