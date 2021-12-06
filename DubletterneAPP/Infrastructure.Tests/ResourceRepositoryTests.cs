@@ -1,11 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
-using Core;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-using Xunit;
 
 namespace Infrastructure.Tests
+
 {
     public class ResourceRepositoryTests : IDisposable
     {

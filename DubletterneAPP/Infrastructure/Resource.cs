@@ -1,6 +1,3 @@
-
-using System.ComponentModel.DataAnnotations;
-
 namespace Infrastructure
 {
     public class Resource
@@ -28,5 +25,13 @@ namespace Infrastructure
         [Url]
         [Required]
         public string? ImageUrl { get; set; }
+ 
+        public Resource (string title) {
+            Title = title;
+        }
+
+        public Resource()
+        {
+        }
     }
 }
