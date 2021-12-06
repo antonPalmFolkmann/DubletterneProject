@@ -1,0 +1,81 @@
+@page "/resources"
+@using Core
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@attribute [Authorize]
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Resources</PageTitle>
+
+<h1>Resources</h1>
+
+<p>
+    <button class="btn btn-primary" @onclick="Create">New resource</button>
+</p>
+
+@if (resources == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Title</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var resource in resources)
+            {
+                <tr>
+                    <td>@resource.User</td>
+                    <td>@resource.Title</td>
+                    <td><button class="btn btn-info" @onclick="@(() => View(resource))">View</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code
+{
+    private ResourceDTO[]? resources;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Resources");
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine(exception.Message);
+            var list = Enumerable.Range(1, 5).Select(index => new ResourceDTO
+            {
+                Id = index,
+                User = String.Format("User id {0}", index),
+                Title = String.Format("Title number {0}", index)
+            })
+            .ToArray();
+            resources = list;
+        }
+    }
+
+    private void View(ResourceDTO resource)
+    {
+        var uri = $"{NavigationManager.BaseUri}resources/{resource.Id}";
+
+        NavigationManager.NavigateTo(uri);
+    }
+
+    private void Create()
+    {
+        var uri = $"{NavigationManager.BaseUri}resources/create";
+
+        NavigationManager.NavigateTo(uri);
+    }
+}

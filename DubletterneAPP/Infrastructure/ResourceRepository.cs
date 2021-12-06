@@ -1,4 +1,5 @@
 using Core;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -36,8 +37,9 @@ namespace Infrastructure
                 Title = resource.Title,
                 User = resource.User,
                 Created = resource.Created,
-                TextParagraphs = GetParagraphs(resource.TextParagraphs).ToList(),
+                TextParagraphs = resource.TextParagraphs as ICollection<TextParagraph>,
                 ImageUrl = resource.ImageUrl
+
             };
 
             _context.Resources.Add(entity);
@@ -47,36 +49,80 @@ namespace Infrastructure
             return (Response.Created, entity.Id);
         }
 
-        private IEnumerable<TextParagraph> GetParagraphs(ICollection<string>? textParagraphs)
+
+        public async Task<Response> DeleteAsync(int resourceID)
         {
-            foreach (var paragraph in textParagraphs)
+            var entity = await _context.Resources.FindAsync(resourceID);
+            
+            if (entity == null)
             {
-                yield return new TextParagraph(paragraph);
+                return Response.NotFound;
             }
+
+            _context.Resources.Remove(entity);
+            await _context.SaveChangesAsync();
+
+            return Response.Deleted;
         }
 
-        public Task<Response> DeleteAsync(int resourceID)
+        public async Task<IReadOnlyCollection<ResourceDTO>> ReadAllAsync()
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<IReadOnlyCollection<ResourceDTO>> ReadAllAsync()
-        {
-            throw new NotImplementedException();
+            var res = (await _context.Resources
+                                 .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title, User = r.User})
+                                 .ToListAsync())
+                                 .AsReadOnly();
+            return res;
         }
         public Task<IReadOnlyCollection<ResourceDTO>> ReadAllByAuthorAsync(UserDTO user)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ResourceDetailsDTO> ReadAsync(int resourceID)
+        public async Task<ResourceDetailsDTO> ReadAsync(int resourceID)
         {
-            throw new NotImplementedException();
+            var res = from c in _context.Resources
+                            where c.Id == resourceID
+                            select new ResourceDetailsDTO
+                            {
+                                Created = DateTime.Today,
+                                Updated = DateTime.Now,
+                                TextParagraphs = new List<string>(),
+                                ImageUrl = "image2.com"
+                            };
+            return await res.FirstOrDefaultAsync();
         }
 
-        public Task<Response> UpdateAsync(ResourceDTO resource)
+        public async Task<Response> UpdateAsync(int id, ResourceUpdateDTO resource)
         {
-            throw new NotImplementedException();
+            var conflict = await _context.Resources
+                                         .Where(r => r.Id != id)
+                                         .Where(r => r.Title == resource.Title)
+                                         .Where(r => r.User == resource.User)
+                                         .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title, User = r.User})
+                                         .AnyAsync();
+            
+            if(conflict)
+            {
+                return Response.Conflict;
+            }
+
+            var entity = await _context.Resources.FirstOrDefaultAsync(c => c.Id == resource.Id);
+                                    
+            if (entity == null)
+            {
+                return Response.NotFound;
+            }
+
+            entity.Title = resource.Title;
+            entity.User = resource.User;
+            entity.Created  = resource.Created;
+            entity.TextParagraphs = resource.TextParagraphs as ICollection<TextParagraph>;
+            entity.Updated = DateTime.Now;
+            entity.ImageUrl = resource.ImageUrl;
+
+            await _context.SaveChangesAsync();
+
+            return Response.Updated;
         }
     }
 }
