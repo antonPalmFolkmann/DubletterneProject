@@ -37,7 +37,7 @@ namespace Infrastructure
                 Title = resource.Title,
                 User = resource.User,
                 Created = resource.Created,
-                TextParagraphs = resource.TextParagraphs as ICollection<TextParagraph>,
+                TextParagraphs = await GetTextParagraphsAsync(resource.TextParagraphs).ToListAsync(),
                 ImageUrl = resource.ImageUrl
 
             };
@@ -48,7 +48,6 @@ namespace Infrastructure
 
             return (Response.Created, entity.Id);
         }
-
 
         public async Task<Response> DeleteAsync(int resourceID)
         {
@@ -67,62 +66,68 @@ namespace Infrastructure
 
         public async Task<IReadOnlyCollection<ResourceDTO>> ReadAllAsync()
         {
-            var res = (await _context.Resources
+            var resources = (await _context.Resources
                                  .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title, User = r.User})
                                  .ToListAsync())
                                  .AsReadOnly();
-            return res;
+            return resources;
         }
+
         public Task<IReadOnlyCollection<ResourceDTO>> ReadAllByAuthorAsync(UserDTO user)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<ResourceDetailsDTO> ReadAsync(int resourceID)
+        public async Task<Option<ResourceDetailsDTO>> ReadAsync(int resourceID)
         {
-            var res = from c in _context.Resources
-                            where c.Id == resourceID
-                            select new ResourceDetailsDTO
-                            {
-                                Created = DateTime.Today,
-                                Updated = DateTime.Now,
-                                TextParagraphs = new List<string>(),
-                                ImageUrl = "image2.com"
-                            };
-            return await res.FirstOrDefaultAsync();
+            var resource = await _context.Resources
+                                .Where(r => r.Id == resourceID)
+                                .Select(r => new ResourceDetailsDTO{
+                                    Id = r.Id,
+                                    Title = r.Title,
+                                    User = r.User,
+                                    Created = r.Created,
+                                    Updated = r.Updated,
+                                    TextParagraphs = r.TextParagraphs.Select(p => p.Paragraph).ToList(),
+                                    ImageUrl = r.ImageUrl
+                                }).FirstOrDefaultAsync();
+            return resource;
         }
 
         public async Task<Response> UpdateAsync(int id, ResourceUpdateDTO resource)
         {
+            var entity = await _context.Resources.FirstOrDefaultAsync(c => c.Id == resource.Id);
+                                    
+            if (entity == null) return Response.NotFound;
+
             var conflict = await _context.Resources
                                          .Where(r => r.Id != id)
                                          .Where(r => r.Title == resource.Title)
-                                         .Where(r => r.User == resource.User)
                                          .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title, User = r.User})
                                          .AnyAsync();
             
-            if(conflict)
-            {
-                return Response.Conflict;
-            }
-
-            var entity = await _context.Resources.FirstOrDefaultAsync(c => c.Id == resource.Id);
-                                    
-            if (entity == null)
-            {
-                return Response.NotFound;
-            }
+            if (conflict) return Response.Conflict;
 
             entity.Title = resource.Title;
             entity.User = resource.User;
             entity.Created  = resource.Created;
-            entity.TextParagraphs = resource.TextParagraphs as ICollection<TextParagraph>;
+            entity.TextParagraphs = await GetTextParagraphsAsync(resource.TextParagraphs).ToListAsync();
             entity.Updated = DateTime.Now;
             entity.ImageUrl = resource.ImageUrl;
 
             await _context.SaveChangesAsync();
 
             return Response.Updated;
+        }
+
+        private async IAsyncEnumerable<TextParagraph> GetTextParagraphsAsync(IEnumerable<string> textParagraphs)
+        {
+            var existing = await _context.TextParagraphs.Where(t => textParagraphs.Contains(t.Paragraph)).ToDictionaryAsync(t => t.Paragraph);
+            
+            foreach (var item in textParagraphs)
+            {
+                yield return existing.TryGetValue(item, out var t) ? t : new TextParagraph(item);
+            }
         }
     }
 }
