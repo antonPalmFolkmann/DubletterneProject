@@ -37,8 +37,9 @@ namespace Infrastructure
                 Title = resource.Title,
                 User = resource.User,
                 Created = resource.Created,
-                TextParagraphs = GetParagraphs(resource.TextParagraphs).ToList(),
+                TextParagraphs = resource.TextParagraphs as ICollection<TextParagraph>,
                 ImageUrl = resource.ImageUrl
+
             };
 
             _context.Resources.Add(entity);
@@ -48,13 +49,14 @@ namespace Infrastructure
             return (Response.Created, entity.Id);
         }
 
+        /*
         private IEnumerable<TextParagraph> GetParagraphs(ICollection<string>? textParagraphs)
         {
-            foreach (var paragraph in textParagraphs)
+            foreach (var textParagraph in textParagraphs)
             {
-                yield return new TextParagraph(paragraph);
+                yield return new TextParagraph(textParagraph);
             }
-        }
+        }*/
 
         public async Task<Response> DeleteAsync(int resourceID)
         {
@@ -71,9 +73,13 @@ namespace Infrastructure
             return Response.Deleted;
         }
 
-        public Task<IReadOnlyCollection<ResourceDTO>> ReadAllAsync()
+        public async Task<IReadOnlyCollection<ResourceDTO>> ReadAllAsync()
         {
-            throw new NotImplementedException();
+            var res = (await _context.Resources
+                                 .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title, User = r.User})
+                                 .ToListAsync())
+                                 .AsReadOnly();
+            return res;
         }
         public Task<IReadOnlyCollection<ResourceDTO>> ReadAllByAuthorAsync(UserDTO user)
         {
@@ -82,41 +88,45 @@ namespace Infrastructure
 
         public async Task<ResourceDetailsDTO> ReadAsync(int resourceID)
         {
-            var response = await _context.Resources
-                                    .Where(c => c.Id != resourceID)
-                                    .Select(c => new ResourceDetailsDTO
-                                    {
-                                        Id = c.Id,
-                                        Title = c.Title,
-                                        User = c.User
-                                    }).FirstAsync();
-            return response;
+            var res = from c in _context.Resources
+                            where c.Id == resourceID
+                            select new ResourceDetailsDTO
+                            {
+                                Created = DateTime.Today,
+                                Updated = DateTime.Now,
+                                TextParagraphs = new List<string>(),
+                                ImageUrl = "image2.com"
+                            };
+            return await res.FirstOrDefaultAsync();
         }
 
-        public async Task<Response> UpdateAsync(int id, ResourceDTO resource)
+        public async Task<Response> UpdateAsync(int id, ResourceUpdateDTO resource)
         {
             var conflict = await _context.Resources
-                                    .Where(c => c.Title == resource.Title)
-                                    .Where(c => c.User == resource.User)
-                                    .Select(c => new ResourceDTO
-                                    {Id = c.Id,
-                                    Title = c.Title, 
-                                    User = c.User
-                                    }).AnyAsync();
-                                    
-            if (conflict)
+                                         .Where(r => r.Id != id)
+                                         .Where(r => r.Title == resource.Title)
+                                         .Where(r => r.User == resource.User)
+                                         .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title, User = r.User})
+                                         .AnyAsync();
+            
+            if(conflict)
             {
                 return Response.Conflict;
             }
 
-            var entity = await _context.Resources.FindAsync(resource.Id);
-
+            var entity = await _context.Resources.FirstOrDefaultAsync(c => c.Id == resource.Id);
+                                    
             if (entity == null)
             {
                 return Response.NotFound;
             }
 
             entity.Title = resource.Title;
+            entity.User = resource.User;
+            entity.Created  = resource.Created;
+            entity.TextParagraphs = resource.TextParagraphs as ICollection<TextParagraph>;
+            entity.Updated = DateTime.Now;
+            entity.ImageUrl = resource.ImageUrl;
 
             await _context.SaveChangesAsync();
 
