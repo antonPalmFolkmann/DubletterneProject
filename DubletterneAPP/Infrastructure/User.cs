@@ -25,11 +25,15 @@ namespace Infrastructure
         [Required]
         [DataType(DataType.DateTime)]
         public DateTime Created { get; set; }
+
+        [Required]
+        [DataType(DataType.DateTime)]
+        public DateTime Updated { get; set; }
         
         [Required]
         [EmailAddress]
         public string? Email { get; set; }
 
-        public ICollection<Resource>? Resources { get; set; }
+        public ICollection<Resource>? Resources { get; set; } = null!;
     }
 }

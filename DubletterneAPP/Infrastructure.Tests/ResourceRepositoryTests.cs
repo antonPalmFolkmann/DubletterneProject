@@ -1,9 +1,4 @@
-﻿using Core;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-using Xunit;
-
-namespace Infrastructure.Tests
+﻿namespace Infrastructure.Tests
 {
     public class ResourceRepositoryTests : IDisposable
     {

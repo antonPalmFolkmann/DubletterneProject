@@ -31,7 +31,7 @@ namespace Infrastructure
                 return (Response.Conflict, -1);
             }
 
-            var entity = new Resource
+            var entity = new Resource()
             {
                 Title = resource.Title,
                 User = resource.User,

@@ -2,20 +2,17 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Core
 {
-    public record UserDTO
-    {
-        public int Id { get; set; }
-        public string? UserName { get; set; }
-    }
+    public record UserDTO(int Id, string? UserName);
 
-    public record UserDetailsDTO : UserDTO
-    {
-        public string? FirstName { get; set; }
-        public string? Surname { get; set; }
-        public DateTime? Created { get; set; }
-        public string? Email { get; set; }
-        public IReadOnlySet<string> Resources { get; set; } = null!;
-    }
+    public record UserDetailsDTO(
+        int Id,
+        string? FirstName,
+        string? LastName,
+        string? UserName,
+        DateTime? Created,
+        DateTime? Updated,
+        string? Email,
+        ISet<string> Resources) : UserDTO(Id, UserName);
 
     public record UserCreateDTO
     {
@@ -27,7 +24,7 @@ namespace Core
         [StringLength(50)]
         [MinLength(1)]
         [Required]
-        public string? Surname { get; init; }
+        public string? LastName { get; init; }
 
         [StringLength(50)]
         [MinLength(1)]
@@ -41,10 +38,14 @@ namespace Core
         [EmailAddress]
         [Required]
         public string? Email { get; init; }
+
+        public ISet<string> Resources { get; init; } = null!;
+
     }
 
     public record UserUpdateDTO : UserCreateDTO
     {
         public int Id { get; init; }
+        public DateTime Updated { get; init; }
     }
 }
