@@ -1,7 +1,3 @@
-using Core;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-
 
 namespace Infrastructure
 {

@@ -1,7 +1,4 @@
 
-using System.Data.Entity;
-using Core;
-
 namespace Infrastructure
 {
     public class UserRepository : IUserRepository
@@ -10,17 +7,17 @@ namespace Infrastructure
         public UserRepository(ILearningContext context){
             _context = context;
         }
-        public async Task<(Response, UserDetailsDTO)> CreateAsync(UserCreateDTO user)
+        public async Task<(Response, int userId)> CreateAsync(UserCreateDTO user)
         {
             var CheckUserName = from u in _context.Users
                                 where u.UserName == user.UserName
-                                select new UserDTO(u.Id, u.UserName) {
+                                select new UserDTO {
                                     Id = u.Id,
                                     UserName = u.UserName
             };
 
             if (CheckUserName.Count() != 0) {
-                return (Response.Conflict, null);
+                return (Response.Conflict, -1);
             }
 
             var entity = new User {
@@ -28,23 +25,65 @@ namespace Infrastructure
                 LastName = user.LastName,
                 UserName = user.UserName,
                 Created = user.Created,
-                Email = user.Email,
-                Resources = await GetResourcesAsync(user.Resources).ToListAsync()
+                Email = user.Email
             };
 
             _context.Users.Add(entity);
             await _context.SaveChangesAsync();
 
-            return new (Response.Created, new UserDetailsDTO(
-                entity.Id,
-                entity.FirstName,
-                entity.LastName,
-                entity.UserName,
-                entity.Created,
-                entity.Updated,
-                entity.Email,
-                entity.Resources.Select(u => u.Title).ToHashSet()
-            ));
+            return new (Response.Created, entity.Id);
+        }
+
+        public async Task<Option<UserDetailsDTO>> ReadAsyncById(int userId)
+        { 
+            var users = from u in _context.Users
+                       where u.Id == userId
+                       select new UserDetailsDTO {
+                            Id = u.Id,
+                            FirstName = u.FirstName,
+                            LastName = u.LastName,
+                            UserName = u.UserName,
+                            Created = u.Created,
+                            Updated = u.Updated,
+                            Email = u.Email,
+                            Resources = u.Resources.Select(u => u.Title).ToList()
+                       };
+
+            return await users.FirstOrDefaultAsync();
+        } 
+
+        public async Task<IReadOnlyCollection<UserDTO>> ReadAllAsync() {
+            
+            var users = (await _context.Users
+                           .Select(u => new UserDTO{Id = u.Id, UserName = u.UserName})
+                           .OrderBy(u => u.Id).ThenBy(u => u.UserName)
+                           .ToListAsync())
+                           .AsReadOnly();
+
+            return  users;
+        }
+
+        
+        public async Task<Response> UpdateAsync(int userId, UserUpdateDTO user)
+        { 
+            var entity = await _context.Users.FindAsync(userId);                                             
+            if (entity == null) {
+                return Response.NotFound;
+            }
+
+            entity.Id = userId;
+            entity.FirstName = user.FirstName;
+            entity.LastName = user.LastName;
+            entity.UserName = user.UserName;
+            entity.Created = user.Created;
+            entity.Updated = user.Updated;
+            entity.Email = user.Email;
+
+            await _context.SaveChangesAsync();
+            
+            return Response.Updated; 
+
+
         }
 
         public async Task<Response> DeleteAsync(int userID)
@@ -61,51 +100,8 @@ namespace Infrastructure
             return Response.Deleted;
         }
 
+        /*
 
-        public async Task<Option<UserDetailsDTO>> ReadAsync(int userId)
-        { 
-            var users = from u in _context.Users
-                       where u.Id == userId
-                       select new UserDetailsDTO(
-                           u.Id,
-                           u.FirstName,
-                           u.LastName,
-                           u.UserName,
-                           u.Created,
-                           u.Updated,
-                           u.Email,
-                           u.Resources.Select(u => u.Title).ToHashSet()
-                       );
-
-            return await users.FirstOrDefaultAsync();
-        } 
-
-        public async Task<IReadOnlyCollection<UserDTO>> ReadAsync() =>
-            (await _context.Users
-                           .Select(u => new UserDTO(u.Id, u.UserName))
-                           .ToListAsync())
-                           .AsReadOnly();
-
-        public async Task<Response> UpdateAsync(int userId, UserUpdateDTO user)
-        {
-            var entity = await _context.Users.FindAsync(userId);                                             
-            if (entity == null) {
-                return Response.NotFound;
-            }
-
-            entity.Id = userId;
-            entity.FirstName = user.FirstName;
-            entity.LastName = user.LastName;
-            entity.UserName = user.UserName;
-            entity.Created = user.Created;
-            entity.Updated = user.Updated;
-            entity.Email = user.Email;
-            entity.Resources = await GetResourcesAsync(user.Resources).ToListAsync();
-
-            await _context.SaveChangesAsync();
-            
-            return Response.Updated;
-        }
 
         private async IAsyncEnumerable<Resource> GetResourcesAsync(IEnumerable<string>? resources)
         {
@@ -117,5 +113,6 @@ namespace Infrastructure
                 }
             }
         }
+        */
     }
 }

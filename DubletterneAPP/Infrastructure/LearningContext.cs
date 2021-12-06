@@ -1,6 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-
-using Core;
 
 namespace Infrastructure;
 public class LearningContext : DbContext, ILearningContext
