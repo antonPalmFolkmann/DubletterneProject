@@ -31,8 +31,7 @@ namespace Core
         public DateTime? Created { get; set; }
 
         [Required]
-        [MinLength(1)]
-        public ICollection<string>? TextParagraphs { get; set; }
+        public ICollection<string> TextParagraphs { get; set; } = new List<string>();
 
         [Url]
         [Required]

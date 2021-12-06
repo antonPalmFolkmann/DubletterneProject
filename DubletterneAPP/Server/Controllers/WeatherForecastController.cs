@@ -1,9 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web.Resource;
-using DubletterneAPP.Shared;
-using System.Text.Json;
-
 namespace DubletterneAPP.Server.Controllers;
 
 [Authorize]
@@ -35,7 +29,7 @@ public class WeatherForecastController : ControllerBase
         })
         .ToArray();
 
-        string jsonString = JsonSerializer.Serialize(list[0]);
+        string jsonString = JsonSerializer.Serialize(list);
 
         Console.WriteLine(jsonString);
 

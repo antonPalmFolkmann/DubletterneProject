@@ -2,7 +2,6 @@
 @using Core
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using System.Text.Json
 @attribute [Authorize]
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
@@ -48,25 +47,22 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        IList<ResourceDTO> list = new List<ResourceDTO>();
-        list.Add(new ResourceDTO {
-            Id = 1,
-            User = "Anton",
-            Title = "Resource1"
-        });
-        list.Add(new ResourceDTO {
-            Id = 2,
-            User = "Alexander",
-            Title = "Resource2"
-        });
-        resources = list.ToArray<ResourceDTO>();
-        
-        string jsonString = JsonSerializer.Serialize(list[0]);
-
-        Console.WriteLine(jsonString);
-        
-
-        //ResourceDTO[]? resources = await Http.GetFromJsonAsync<ResourceDTO[]>("Resources");
+        try
+        {
+            resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Resources");
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine(exception.Message);
+            var list = Enumerable.Range(1, 5).Select(index => new ResourceDTO
+            {
+                Id = index,
+                User = String.Format("User id {0}", index),
+                Title = String.Format("Title number {0}", index)
+            })
+            .ToArray();
+            resources = list;
+        }
     }
 
     private void View(ResourceDTO resource)
