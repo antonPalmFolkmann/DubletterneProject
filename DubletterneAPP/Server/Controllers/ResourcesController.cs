@@ -15,18 +15,20 @@ public class ResourcesController : ControllerBase
         _repository = repository;
     }
 
-    [HttpGet("Resources")]
-    public IEnumerable<ResourceDTO> Get()
+    [HttpGet]
+    public string Get()
     {
+        Console.WriteLine("I got something");
         var list = Enumerable.Range(1, 5).Select(index => new ResourceDTO
         {
             Id = index,
-            User = String.Format("User id {0}", index),
+            User = String.Format("User id from server {0}", index),
             Title = String.Format("Title number {0}", index)
         })
         .ToArray();
 
-        return list;
+        var jsonString = JsonSerializer.Serialize(list);
+        return jsonString;
     }
 
     [AllowAnonymous]

@@ -10,7 +10,7 @@ builder.Services.Configure<JwtBearerOptions>(
         options.TokenValidationParameters.NameClaimType = "name";
     });
 
-builder.Services.AddDbContext<LearningContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Learning")));
+builder.Services.AddDbContext<LearningContext>(options => options.UseSqlServer("Server=tcp:dubletterne.database.windows.net,1433;Initial Catalog=Project;Persist Security Info=False;User ID=ncjo@itu.dk;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Authentication=\"Active Directory Integrated\";"));
 builder.Services.AddScoped<ILearningContext, LearningContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
