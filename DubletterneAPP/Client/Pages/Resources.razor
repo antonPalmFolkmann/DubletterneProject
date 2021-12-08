@@ -1,15 +1,18 @@
 @page "/resources"
+@using Core
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@using DubletterneAPP.Shared
 @attribute [Authorize]
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
 
-<PageTitle>Resource list page</PageTitle>
+<PageTitle>Resources</PageTitle>
 
-<h1>Resource list page</h1>
+<h1>Resources</h1>
 
-<p>This page lists all available resources.</p>
+<p>
+    <button class="btn btn-primary" @onclick="Create">New resource</button>
+</p>
 
 @if (resources == null)
 {
@@ -20,42 +23,59 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th>User</th>
+                <th>Title</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in resources)
+            @foreach (var resource in resources)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td>@resource.User</td>
+                    <td>@resource.Title</td>
+                    <td><button class="btn btn-info" @onclick="@(() => View(resource))">View</button></td>
                 </tr>
             }
         </tbody>
     </table>
 }
 
-@code {
-    private WeatherForecast[]? resources;
+@code
+{
+    private ResourceDTO[]? resources;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            //resources = await Http.GetFromJsonAsync<WeatherForecast[]>("Resource");
-            
-            var response = await Http.GetAsync("Resource");
-            var jsonstring = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(jsonstring);
+            resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Resources");
         }
-        catch (AccessTokenNotAvailableException exception)
+        catch (Exception exception)
         {
-            exception.Redirect();
+            Console.WriteLine(exception.Message);
+            var list = Enumerable.Range(1, 5).Select(index => new ResourceDTO
+            {
+                Id = index,
+                User = String.Format("User id {0}", index),
+                Title = String.Format("Title number {0}", index)
+            })
+            .ToArray();
+            resources = list;
         }
+    }
+
+    private void View(ResourceDTO resource)
+    {
+        var uri = $"{NavigationManager.BaseUri}resources/{resource.Id}";
+
+        NavigationManager.NavigateTo(uri);
+    }
+
+    private void Create()
+    {
+        var uri = $"{NavigationManager.BaseUri}resources/create";
+
+        NavigationManager.NavigateTo(uri);
     }
 }
