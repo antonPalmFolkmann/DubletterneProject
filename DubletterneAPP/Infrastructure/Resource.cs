@@ -20,7 +20,7 @@ namespace Infrastructure
         public DateTime? Updated { get; set; }
 
         [Required]
-        public IEnumerable<TextParagraph> TextParagraphs { get; set; } = new List<TextParagraph>();
+        public ICollection<TextParagraph> TextParagraphs { get; set; } = new List<TextParagraph>();
 
         [Url]
         [Required]

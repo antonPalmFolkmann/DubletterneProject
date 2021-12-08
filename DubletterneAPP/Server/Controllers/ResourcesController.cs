@@ -16,18 +16,13 @@ public class ResourcesController : ControllerBase
     }
 
     [HttpGet]
-    public string Get()
+    public async Task<string> Get()
     {
         Console.WriteLine("I got something");
-        var list = Enumerable.Range(1, 5).Select(index => new ResourceDTO
-        {
-            Id = index,
-            User = String.Format("User id from server {0}", index),
-            Title = String.Format("Title number {0}", index)
-        })
-        .ToArray();
+        var list = await _repository.ReadAllAsync();
+        var array = list.ToArray();
 
-        var jsonString = JsonSerializer.Serialize(list);
+        var jsonString = JsonSerializer.Serialize(array);
         return jsonString;
     }
 
