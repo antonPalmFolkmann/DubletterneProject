@@ -23,6 +23,7 @@ else
     <table class="table">
         <thead>
             <tr>
+                <th>ID</th>
                 <th>User</th>
                 <th>Title</th>
                 <th></th>
@@ -32,6 +33,7 @@ else
             @foreach (var resource in resources)
             {
                 <tr>
+                    <td>@resource.Id</td>
                     <td>@resource.User</td>
                     <td>@resource.Title</td>
                     <td><button class="btn btn-info" @onclick="@(() => View(resource))">View</button></td>

@@ -1,4 +1,3 @@
-
 namespace Infrastructure;
 public class LearningContext : DbContext, ILearningContext
 {
@@ -21,4 +20,17 @@ public class LearningContext : DbContext, ILearningContext
                     .IsUnique();
     }
 
+}
+
+public class LearningContextFactory : IDesignTimeDbContextFactory<LearningContext>
+{
+    public LearningContext CreateDbContext(string[] args)
+    {
+
+        var connectionString = "Server=tcp:dubletterne.database.windows.net,1433;Initial Catalog=Project;Persist Security Info=False;User ID={yourUser};Password={yourPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Authentication=\"Active Directory Password\";";
+
+        var optionsBuilder = new DbContextOptionsBuilder<LearningContext>().UseSqlServer(connectionString);
+
+        return new LearningContext(optionsBuilder.Options);
+    }
 }

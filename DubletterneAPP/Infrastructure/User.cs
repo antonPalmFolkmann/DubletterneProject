@@ -33,6 +33,6 @@ namespace Infrastructure
         [EmailAddress]
         public string? Email { get; set; }
 
-        public ICollection<Resource>? Resources { get; set; } = null!;
+        public ICollection<Resource>? Resources { get; set; } = new List<Resource>();
     }
 }
