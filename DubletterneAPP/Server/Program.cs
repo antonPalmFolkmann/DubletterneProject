@@ -10,7 +10,11 @@ builder.Services.Configure<JwtBearerOptions>(
         options.TokenValidationParameters.NameClaimType = "name";
     });
 
-builder.Services.AddDbContext<LearningContext>(options => options.UseSqlServer("Server=tcp:dubletterne.database.windows.net,1433;Initial Catalog=Project;Persist Security Info=False;User ID={yourUser};Password={yourPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Authentication=\"Active Directory Password\";"));
+builder.Services.AddDbContext<LearningContext>(options => 
+                                                        {
+                                                            options.UseSqlServer("Server=tcp:dubletterne.database.windows.net,1433;Initial Catalog=Project;Persist Security Info=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False");
+                                                            options.AddInterceptors(new AadAuthenticationDbConnectionInterceptor());
+                                                        });
 builder.Services.AddScoped<ILearningContext, LearningContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
