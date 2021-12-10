@@ -26,9 +26,7 @@ namespace Infrastructure
             {
                 sqlConnection.AccessToken = await GetAccessToken_ClientCredentials();
             }
-
-            Console.WriteLine(connectionStringBuilder.ConnectionString);
-
+            
             return await base.ConnectionOpeningAsync(connection,eventData,result,cancellationToken);
         }
         public static async Task<string> GetAccessToken_ClientCredentials()
@@ -55,8 +53,6 @@ namespace Infrastructure
                 Console.Write($"Error obtaining access token: {ex.Message}");
                 
             }
-        
-            Console.WriteLine($"Access token: {accessToken}\n");
         
             return accessToken;
         }

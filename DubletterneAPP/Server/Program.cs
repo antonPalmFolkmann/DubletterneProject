@@ -12,7 +12,7 @@ builder.Services.Configure<JwtBearerOptions>(
 
 builder.Services.AddDbContext<LearningContext>(options => 
                                                         {
-                                                            options.UseSqlServer("Server=tcp:dubletterne.database.windows.net,1433;Initial Catalog=Project;Persist Security Info=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False");
+                                                            options.UseSqlServer(builder.Configuration.GetConnectionString("Learning"));
                                                             options.AddInterceptors(new AadAuthenticationDbConnectionInterceptor());
                                                         });
 builder.Services.AddScoped<ILearningContext, LearningContext>();
