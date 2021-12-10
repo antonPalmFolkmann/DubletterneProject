@@ -1,5 +1,5 @@
 using Xunit;
-using Infrastructure;
+using Infrastructure.Search;
 
 namespace Infrastructure.Tests.Search;
 
