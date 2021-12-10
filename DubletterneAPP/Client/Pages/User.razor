@@ -1,0 +1,80 @@
+@page "/users"
+@using Core
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@attribute [Authorize]
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Users</PageTitle>
+
+<h1>Users</h1>
+
+<p>
+    <button class="btn btn-primary" @onclick="Create">New user</button>
+</p>
+
+@if (users == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>UserName</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in users)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.UserName</td>
+                    <td><button class="btn btn-info" @onclick="@(() => View(user))">View</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code
+{
+    private UserDTO[]? users;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            users = await Http.GetFromJsonAsync<UserDTO[]>($"api/Users");
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine(exception.Message);
+            var list = Enumerable.Range(1, 5).Select(index => new UserDTO
+            {
+                Id = index,
+                UserName = String.Format("Username {0}", index),
+            })
+            .ToArray();
+            users = list;
+        }
+    }
+
+    private void View(UserDTO user)
+    {
+        var uri = $"{NavigationManager.BaseUri}users/{user.Id}";
+
+        NavigationManager.NavigateTo(uri);
+    }
+
+    private void Create()
+    {
+        var uri = $"{NavigationManager.BaseUri}users/create";
+
+        NavigationManager.NavigateTo(uri);
+    }
+}

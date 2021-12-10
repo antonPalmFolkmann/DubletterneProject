@@ -1,0 +1,88 @@
+@page "/users/{UserId:int}"
+@attribute [Authorize]
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+@if (user != null)
+{
+    <div class="card" style="width: 18rem;">
+        <div class="card-header">
+            @user.UserName
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Name: @user.FirstName @user.LastName</h5>
+            <p class="card-text">Email: @user.Email</p>
+        </div>
+        <div class="card-body">
+            <button type="button" class="btn btn-primary" @onclick="Edit">Edit</button>
+            <button type="button" class="btn btn-danger" @onclick="Delete">Delete</button>
+        </div>
+    </div>
+}
+
+<div class="form-group">
+    <br />
+    <button type="button" class="btn btn-secondary" @onclick="Back">Back</button>
+</div>
+
+@code {
+    [Parameter]
+    public int? UserId { get; set; }
+
+    private UserDetailsDTO? user;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+             if (UserId != 0)
+            {
+                user = await Http.GetFromJsonAsync<UserDetailsDTO>($"api/users/{UserId}");
+            }
+
+            await base.OnParametersSetAsync();
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine(exception.Message);
+            user = new UserDetailsDTO {
+                Id = 1,
+                FirstName = "Harry",
+                LastName = "Potter",
+                UserName = "TBWL",
+                Created = DateTime.Today,
+                Updated = DateTime.Today,
+                Email = "TBWL@diagonal.com",
+                Resources = new List<string>{"Hello", "there"}
+            };
+
+        }
+    }
+
+    private void Edit()
+    {
+        var uri = $"{NavigationManager.BaseUri}users/{UserId}/edit";
+
+        NavigationManager.NavigateTo(uri);
+    }
+
+    private async Task Delete()
+    {
+        if (await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete the user?"))
+        {
+            await Http.DeleteAsync($"api/Users/{UserId}");
+
+            var uri = $"{NavigationManager.BaseUri}users";
+
+            NavigationManager.NavigateTo(uri);
+        }
+    }
+
+    private void Back()
+    {
+        var uri = $"{NavigationManager.BaseUri}users";
+
+        NavigationManager.NavigateTo(uri);
+    }
+}

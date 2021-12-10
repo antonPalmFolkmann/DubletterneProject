@@ -20,25 +20,25 @@ namespace Core
         [StringLength(50)]
         [MinLength(1)]
         [Required]
-        public string? FirstName { get; init; }
+        public string? FirstName { get; set; }
 
         [StringLength(50)]
         [MinLength(1)]
         [Required]
-        public string? LastName { get; init; }
+        public string? LastName { get; set; }
 
         [StringLength(50)]
         [MinLength(1)]
         [Required]
-        public string? UserName { get; init; }
+        public string? UserName { get; set; }
 
         [Required]
         [DataType(DataType.DateTime)]
-        public DateTime Created { get; init; }
+        public DateTime Created { get; set; }
 
         [EmailAddress]
         [Required]
-        public string? Email { get; init; }
+        public string? Email { get; set; }
 
     }
 
