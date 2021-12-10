@@ -26,7 +26,7 @@ namespace Infrastructure
             {
                 sqlConnection.AccessToken = await GetAccessToken_ClientCredentials();
             }
-
+            
             return await base.ConnectionOpeningAsync(connection,eventData,result,cancellationToken);
         }
         public static async Task<string> GetAccessToken_ClientCredentials()
