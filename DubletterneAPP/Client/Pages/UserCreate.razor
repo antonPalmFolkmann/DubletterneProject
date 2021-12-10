@@ -1,0 +1,72 @@
+@page "/users/create"
+@attribute [Authorize]
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h1>Create User</h1>
+
+<hr />
+
+<EditForm Model="@user" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="FirstName">FirstName</label>
+        <InputText id="FirstName" @bind-Value="user.FirstName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="LastName">LastName</label>
+        <InputText id="LastName" @bind-Value="user.LastName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="UserName">UserName</label>
+        <InputDate id="UserName" @bind-Value="user.UserName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="Created">Created</label>
+        <InputDate id="Created" @bind-Value="user.Created" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="Email">Email</label>
+        <InputText id="Email" @bind-Value="user.Email" class="form-control" />
+    </div>
+    <div class="form-group">
+        <br />
+        <button type="submit" class="btn btn-success">Create</button>
+        <button type="reset" class="btn btn-secondary">Reset</button>
+        <button type="button" class="btn btn-primary" @onclick="Cancel">Cancel</button>
+    </div>
+</EditForm>
+
+@code {
+    private UserCreateDTO user = new();
+    
+    /*
+    private string TextParagraphs
+    {
+        get => string.Join(Environment.NewLine, resource.TextParagraphs);
+        set => resource.TextParagraphs = value.Split(Environment.NewLine).Select(p => p.Trim()).Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
+    } */
+
+    private async Task HandleValidSubmit()
+    {
+        var response = await Http.PostAsJsonAsync("api/Users", user);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var created = await response.Content.ReadFromJsonAsync<UserDetailsDTO>();
+
+            var uri = $"{NavigationManager.BaseUri}users/{created?.Id}";
+
+            NavigationManager.NavigateTo(uri);
+        }
+    }
+
+    private void Cancel()
+    {
+        var uri = $"{NavigationManager.BaseUri}users";
+
+        NavigationManager.NavigateTo(uri);
+    } 
+} 
+

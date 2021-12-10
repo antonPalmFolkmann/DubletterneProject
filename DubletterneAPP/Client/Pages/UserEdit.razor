@@ -1,0 +1,77 @@
+@page "/users/{UserId:int}/edit"
+@attribute [Authorize]
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h1>Edit User</h1>
+
+<hr />
+
+@if (user != null)
+{
+    <EditForm Model="@user" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            <label for="FirstName">FirstName</label>
+            <InputText id="FirstName" @bind-Value="user.FirstName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="LastName">LastName</label>
+            <InputText id="LastName" @bind-Value="user.LastName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="UserName">UserName</label>
+            <InputDate id="UserName" @bind-Value="user.UserName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="Created">Created</label>
+            <InputDate id="Created" @bind-Value="user.Created" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="Email">Email</label>
+            <InputText id="Email" @bind-Value="user.Email" class="form-control" />
+        </div>
+        <div class="form-group">
+            <br />
+            <button type="submit" class="btn btn-success">Update</button>
+            <button type="button" class="btn btn-primary" @onclick="Cancel">Cancel</button>
+        </div>
+    </EditForm>
+}
+
+@code {
+    private UserUpdateDTO user = null!;
+
+    [Parameter]
+    public int UserId { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (UserId != 0)
+        {
+            user = await Http.GetFromJsonAsync<UserUpdateDTO>($"api/Users/{UserId}") ?? new();
+        }
+
+        await base.OnParametersSetAsync();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var response = await Http.PutAsJsonAsync($"api/Users/{UserId}", user);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var uri = $"{NavigationManager.BaseUri}users/{UserId}";
+
+            NavigationManager.NavigateTo(uri);
+        }
+    }
+
+    private void Cancel()
+    {
+        var uri = $"{NavigationManager.BaseUri}users/{UserId}";
+
+        NavigationManager.NavigateTo(uri);
+    }
+} 
