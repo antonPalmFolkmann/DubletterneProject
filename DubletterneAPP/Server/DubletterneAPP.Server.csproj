@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>DubletterneAPP.Server-FC08C208-A494-41B5-92E8-D91B7ED5D46F</UserSecretsId>
     <WebProject_DirectoryAccessLevelKey>0</WebProject_DirectoryAccessLevelKey>
+    <UserSecretsId>82d6f2b6-6d6b-4082-9caf-887f616616f9</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
