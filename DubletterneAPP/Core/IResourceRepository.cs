@@ -8,5 +8,7 @@ namespace Core
         Task<IReadOnlyCollection<ResourceDTO>> ReadAllAsync();
         Task<Response> UpdateAsync(int id, ResourceUpdateDTO resource);
         Task<Response> DeleteAsync(int resourceID);
+
+        Task<IEnumerable<ResourceDTO>> Search(string s);
     }
 }
