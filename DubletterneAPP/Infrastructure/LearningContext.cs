@@ -9,7 +9,7 @@ public class LearningContext : DbContext, ILearningContext
     protected override void OnModelCreating(ModelBuilder modelBuilder){
         modelBuilder.Entity<User>()
                     .HasIndex(u => u.UserName)
-                    .IsUnique();
+                    .IsUnique();                   ;
 
         modelBuilder.Entity<Resource>()
                     .HasIndex(r => r.Title)

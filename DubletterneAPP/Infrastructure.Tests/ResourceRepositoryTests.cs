@@ -1,4 +1,3 @@
-
 namespace Infrastructure.Tests
 
 {
@@ -179,8 +178,13 @@ namespace Infrastructure.Tests
             };
 
             var actual = await _repository.ReadAsync(2);
+            var paragraphs = actual.Value.TextParagraphs;
 
             Assert.Equal(resource.Id, actual.Value.Id);
+            Assert.Collection(paragraphs,
+                resource => Assert.Equal("Gutentag", paragraphs.ElementAt(0)),
+                resource => Assert.Equal("Come stai?", paragraphs.ElementAt(1))
+            );
         }
         
         [Fact]

@@ -1,3 +1,5 @@
+using Server.Model;
+
 namespace DubletterneAPP.Server.Controllers;
 
 [Authorize]
@@ -16,31 +18,38 @@ public class ResourcesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<string> Get()
-    {
-        Console.WriteLine("I got something");
-        var list = await _repository.ReadAllAsync();
-        var array = list.ToArray();
-
-        var jsonString = JsonSerializer.Serialize(array);
-        return jsonString;
-    }
+    public async Task<IReadOnlyCollection<ResourceDTO>> Get() 
+        => await _repository.ReadAllAsync();
 
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ResourceDetailsDTO), StatusCodes.Status200OK)]
     [HttpGet("{id}")]
-    public async Task<ResourceDetailsDTO> Get(int id)
-        => (await _repository.ReadAsync(id));
+    public async Task<ActionResult<ResourceDetailsDTO>> Get(int id)
+        => (await _repository.ReadAsync(id)).ToActionResult();
+
+
 
     [HttpPost]
-    public async Task<int> Post(ResourceCreateDTO resource)
+    [ProducesResponseType(typeof((Response, int)), 201)]
+    public async Task<CreatedAtActionResult> Post(ResourceCreateDTO toCreate)
     {
-        Console.WriteLine("I got post request");
-        
-        var created = await _repository.CreateAsync(resource);
+        var (response, createdId) = await _repository.CreateAsync(toCreate);
 
-        return created.resourceID;
+        return CreatedAtAction(nameof(Get), (response, createdId));
     }
+
+    [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Put(int id, [FromBody] ResourceUpdateDTO resource)
+            => (await _repository.UpdateAsync(id, resource)).ToActionResult();
+
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(int id)
+        => (await _repository.DeleteAsync(id)).ToActionResult();
 
 }

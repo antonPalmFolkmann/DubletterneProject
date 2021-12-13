@@ -46,14 +46,21 @@ namespace Infrastructure
 
         public async Task<Response> DeleteAsync(int resourceID)
         {
-            var entity = await _context.Resources.FindAsync(resourceID);
+            var resource = await _context.Resources.FindAsync(resourceID);
+            var entity = await ReadAsync(resourceID);
             
-            if (entity == null)
+            if (resource == null)
             {
                 return Response.NotFound;
             }
+            
+            
+            foreach (var item in entity.Value.TextParagraphs)
+            {
+                _context.TextParagraphs.Remove(_context.TextParagraphs.Single(t => t.Paragraph == item));
+            }
 
-            _context.Resources.Remove(entity);
+            _context.Resources.Remove(resource);
             await _context.SaveChangesAsync();
 
             return Response.Deleted;
@@ -75,7 +82,7 @@ namespace Infrastructure
 
         public async Task<Option<ResourceDetailsDTO>> ReadAsync(int resourceID)
         {
-            var resource = await _context.Resources
+            var resource = _context.Resources
                                 .Where(r => r.Id == resourceID)
                                 .Select(r => new ResourceDetailsDTO{
                                     Id = r.Id,
@@ -85,8 +92,8 @@ namespace Infrastructure
                                     Updated = r.Updated,
                                     TextParagraphs = r.TextParagraphs.Select(p => p.Paragraph).ToList(),
                                     ImageUrl = r.ImageUrl
-                                }).FirstOrDefaultAsync();
-            return resource;
+                                });
+            return await resource.FirstOrDefaultAsync();
         }
 
         public async Task<Response> UpdateAsync(int id, ResourceUpdateDTO resource)

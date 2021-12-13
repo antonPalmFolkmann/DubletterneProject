@@ -1,3 +1,5 @@
+namespace Server.Model;
+
 public static class SeedExtensions
 {
     public static async Task<IHost> SeedAsync(this IHost host)
