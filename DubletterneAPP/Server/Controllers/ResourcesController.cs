@@ -33,5 +33,14 @@ public class ResourcesController : ControllerBase
     public async Task<ResourceDetailsDTO> Get(int id)
         => (await _repository.ReadAsync(id));
 
+    [HttpPost]
+    public async Task<IActionResult> Post(ResourceCreateDTO resource)
+    {
+        Console.WriteLine("I got post request");
+        
+        var created = await _repository.CreateAsync(resource);
+
+        return CreatedAtAction(nameof(Get), new {created.resourceID}, created);
+    }
 
 }

@@ -3,6 +3,7 @@
 @attribute [Authorize]
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider authStateProvider
 
 <h1>Create Resource</h1>
 
@@ -50,9 +51,13 @@
 
     private async Task HandleValidSubmit()
     {
-        var token = await AadAuthenticationDbConnectionInterceptor.GetAccessToken_UserInteractive();
-        Console.WriteLine(token);
-        /*var response = await Http.PostAsJsonAsync("api/Resources", resource);
+        var authState = await authStateProvider.GetAuthenticationStateAsync();
+        var username = authState.User.Claims.Where(c => c.Type == "preferred_username").First().Value;
+        Console.WriteLine("username: " + username);
+        
+        var response = await Http.PostAsJsonAsync("api/Resources", resource);
+
+        Console.WriteLine(response.ToString());
 
         if (response.IsSuccessStatusCode)
         {
@@ -61,7 +66,7 @@
             var uri = $"{NavigationManager.BaseUri}resources/{created?.Id}";
 
             NavigationManager.NavigateTo(uri);
-        }*/
+        }
     }
 
     private void Cancel()

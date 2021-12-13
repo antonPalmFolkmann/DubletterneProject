@@ -13,7 +13,6 @@ builder.Services.Configure<JwtBearerOptions>(
 builder.Services.AddDbContext<LearningContext>(options => 
                                                         {
                                                             options.UseSqlServer(builder.Configuration.GetConnectionString("Learning"));
-                                                            options.AddInterceptors(new AadAuthenticationDbConnectionInterceptor());
                                                         });
 builder.Services.AddScoped<ILearningContext, LearningContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
