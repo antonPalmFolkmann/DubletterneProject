@@ -131,5 +131,19 @@ namespace Infrastructure
                 yield return existing.TryGetValue(item, out var t) ? t : new TextParagraph(item);
             }
         }
+
+        public async Task<IEnumerable<ResourceDTO>> Search(string s){
+            if (string.IsNullOrWhiteSpace(s)){
+                 var resources = (await _context.Resources
+                                 .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title, User = r.User})
+                                 .ToListAsync());
+                return resources;
+            }
+            var matches = await _context.Resources
+                                            .Where(r => r.Title.ToLower().Contains(s.ToLower()))
+                                            .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title, User = r.User})
+                                            .ToListAsync();
+            return matches;
+        }
     }
 }

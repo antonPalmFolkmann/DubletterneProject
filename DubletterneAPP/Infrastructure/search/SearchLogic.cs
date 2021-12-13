@@ -14,10 +14,10 @@ namespace Infrastructure.Search
         public Dictionary<string, int> matchesWithScore;
         public string[] searchTerm;
         public SearchParameter searchParameter;
-        */
+        
 
 
-        public static List<KeyValuePair<string, int>> SearchMAIN(string Term, SearchParameter parameter){
+        public static List<KeyValuePair<string, int>> SearchMAIN(SearchRequestForm searchRequestForm){
             if (!SearchValidater.ValidateSearchTermCharacters(Term)) {
                 throw new ArgumentException("Search Term is not valid, contains invalid charecters.");
             }
@@ -88,7 +88,7 @@ namespace Infrastructure.Search
             //"DatabaseManagersAPI" call
             return "DatabaseManagersAPI";
         }
-
+*/
         
     }
 }
