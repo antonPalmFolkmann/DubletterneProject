@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 namespace DubletterneAPP.Server.Controllers;
 
 [Authorize]
@@ -64,20 +65,5 @@ public class SearchController : ControllerBase{
 
         return Ok(z);
     }
-
-
-    /*
-    [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] ProductParameters productParameters)
-        {
-            var products = await _repo.GetProducts(productParameters);
-
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(products.MetaData));
-
-            return Ok(products);
-        }
-        */
-
-
 
 }
