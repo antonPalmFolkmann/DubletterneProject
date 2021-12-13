@@ -4,7 +4,7 @@ $project = "DubletterneAPP/Server"
 #Write-Host "Starting SQL Server"
 #docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=$password" -p 1433:1433 -d mcr.microsoft.com/mssql/server:2019-latest
 #$database = "Learning"
-$connectionString = "Server=tcp:dubletterne.database.windows.net,1433;Initial Catalog=Project;Persist Security Info=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False"
+$connectionString = "Server=dubletterne.database.windows.net; Authentication=Active Directory Service Principal; Database=Project; User Id=94eabc4d-57ab-4d90-b5d8-92dad5c49f2e; Password=x~-7Q~th26rtfoBxGJx3aZF0IZAWedtFuXhGM"
 
 Write-Host "Configuring Connection String"
 dotnet user-secrets init --project $project

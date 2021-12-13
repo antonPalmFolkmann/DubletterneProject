@@ -4,12 +4,12 @@ namespace DubletterneAPP.Server.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-public class ResourcesController : ControllerBase
+public class UsersController : ControllerBase
 {
-    private readonly ILogger<ResourcesController> _logger;
-    private readonly IResourceRepository _repository;
+    private readonly ILogger<UsersController> _logger;
+    private readonly IUserRepository _repository;
 
-    public ResourcesController(ILogger<ResourcesController> logger, IResourceRepository repository)
+    public UsersController(ILogger<UsersController> logger, IUserRepository repository)
     {
         _logger = logger;
         _repository = repository;
@@ -28,19 +28,18 @@ public class ResourcesController : ControllerBase
 
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ResourceDetailsDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(UserDetailsDTO), StatusCodes.Status200OK)]
     [HttpGet("{id}")]
-    public async Task<ResourceDetailsDTO> Get(int id)
-        => (await _repository.ReadAsync(id));
+    public async Task<UserDetailsDTO> Get(int id)
+        => (await _repository.ReadAsyncById(id));
 
     [HttpPost]
-    public async Task<int> Post(ResourceCreateDTO resource)
+    public async Task<int> Post(UserCreateDTO user)
     {
         Console.WriteLine("I got post request");
         
-        var created = await _repository.CreateAsync(resource);
+        var created = await _repository.CreateAsync(user);
 
-        return created.resourceID;
+        return created.userId;
     }
-
 }

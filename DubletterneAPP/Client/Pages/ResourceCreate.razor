@@ -1,7 +1,9 @@
 @page "/resources/create"
+@using Infrastructure
 @attribute [Authorize]
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider authStateProvider
 
 <h1>Create Resource</h1>
 
@@ -53,9 +55,11 @@
 
         if (response.IsSuccessStatusCode)
         {
-            var created = await response.Content.ReadFromJsonAsync<ResourceDetailsDTO>();
+            Console.WriteLine("i succeded");
+            var createdID = await response.Content.ReadFromJsonAsync<int>();
+            Console.WriteLine("created: " + createdID);
 
-            var uri = $"{NavigationManager.BaseUri}resources/{created?.Id}";
+            var uri = $"{NavigationManager.BaseUri}resources/{createdID}";
 
             NavigationManager.NavigateTo(uri);
         }
