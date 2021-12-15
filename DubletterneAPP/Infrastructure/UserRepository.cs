@@ -50,7 +50,7 @@ namespace Infrastructure
                        };
 
             return await users.FirstOrDefaultAsync();
-        } 
+        }
 
         public async Task<Option<UserDetailsDTO>> ReadAsyncByUsername(string username)
         { 

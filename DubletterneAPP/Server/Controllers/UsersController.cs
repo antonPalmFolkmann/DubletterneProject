@@ -41,7 +41,6 @@ public class UsersController : ControllerBase
     public async Task<UserDetailsDTO> Get(string username)
         => (await _repository.ReadAsyncByUsername(username));
 
-
     [HttpPost]
     public async Task<int> Post(UserCreateDTO user)
     {
