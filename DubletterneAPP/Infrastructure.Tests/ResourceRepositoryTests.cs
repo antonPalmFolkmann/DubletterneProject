@@ -18,12 +18,34 @@ namespace Infrastructure.Tests
 
             var user1 = new User{
                 Id = 1,
-                FirstName = "Harry",
-                LastName = "Potter",
-                UserName = "hjpo",
+                FirstName = "User",
+                LastName = "Fuser",
+                UserName = "UserFuser",
                 Created = DateTime.Now,
                 Updated = null,
-                Email = "hjpo@itu.dk",
+                Email = "userfuser@itu.dk",
+                Resources = null
+            };
+
+            var user2 = new User{
+                Id = 2,
+                FirstName = "A",
+                LastName = "Nimals",
+                UserName = "Animals",
+                Created = DateTime.Now,
+                Updated = null,
+                Email = "animals@itu.dk",
+                Resources = null
+            };
+
+            var user3 = new User{
+                Id = 3,
+                FirstName = "His",
+                LastName = "Tory",
+                UserName = "History",
+                Created = DateTime.Now,
+                Updated = null,
+                Email = "history@itu.dk",
                 Resources = null
             };
 
@@ -41,7 +63,7 @@ namespace Infrastructure.Tests
             {
                 Id = 2,
                 Title = "Liberate",
-                User = user1,
+                User = user2,
                 Created = DateTime.Today,
                 TextParagraphs =  new List<TextParagraph>{new TextParagraph("Gutentag"), new TextParagraph("Come stai?")},
                 ImageUrl = "image2.com"
@@ -51,7 +73,7 @@ namespace Infrastructure.Tests
             {
                 Id = 3,
                 Title = "StarWars",
-                User = user1,
+                User = user3,
                 Created = DateTime.Today,
                 TextParagraphs =  new List<TextParagraph>{new TextParagraph("Hello There"), new TextParagraph("General Kenobi")},
                 ImageUrl = "image3.com"
@@ -224,7 +246,8 @@ namespace Infrastructure.Tests
 
              Assert.Collection(resources, 
              resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!"}, resource),
-             resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate"}, resource)
+             resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate"}, resource),
+             resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars"}, resource)
              );
         }
 
@@ -254,7 +277,7 @@ namespace Infrastructure.Tests
             var searchTerm = "libe";
             var expected = new List<ResourceDTO>()
             {
-                new ResourceDTO{Id = 2, Title = "Liberate", User = new UserDTO{Id=1, UserName ="Animals"}}
+                new ResourceDTO{Id = 2, Title = "Liberate", User = new UserDTO{Id=2, UserName ="Animals"}}
             };
             
             //Act
@@ -280,7 +303,7 @@ namespace Infrastructure.Tests
             //Assert
             Assert.Collection(actualOrdered, 
                 resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!", User=new UserDTO{Id=1, UserName ="UserFuser"}}, resource),
-                resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User=new UserDTO{Id=1, UserName ="History"}}, resource)
+                resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User=new UserDTO{Id=3, UserName ="History"}}, resource)
             );
 
         }
@@ -302,8 +325,8 @@ namespace Infrastructure.Tests
             //Assert
             Assert.Collection(actualOrdered, 
                 resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!", User = new UserDTO{Id=1, UserName ="UserFuser"}}, resource),
-                resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate", User = new UserDTO{Id=1, UserName ="Animals"}}, resource),
-                resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User = new UserDTO{Id=1, UserName ="History"}}, resource)
+                resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate", User = new UserDTO{Id=2, UserName ="Animals"}}, resource),
+                resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User = new UserDTO{Id=3, UserName ="History"}}, resource)
             );
         }
 
