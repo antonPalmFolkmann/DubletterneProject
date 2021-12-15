@@ -38,6 +38,8 @@ public class SearchController : ControllerBase{
 
                 switch (searchRequestForm.searchParam){
                     case SearchParam.User:
+                        var n = await _userRepository.Search(s);
+                        matches = n.ToList<ISearchAble>();
                         break;
                     case SearchParam.Category:
                         break;

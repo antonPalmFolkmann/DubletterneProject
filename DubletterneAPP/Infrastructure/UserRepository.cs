@@ -100,9 +100,22 @@ namespace Infrastructure
             return Response.Deleted;
         }
 
+        public async Task<IEnumerable<UserDTO>> Search(string s)
+        {
+            if (string.IsNullOrWhiteSpace(s)){
+                 var users = (await _context.Users
+                                 .Select(r => new UserDTO{Id = r.Id, UserName = r.UserName})
+                                 .ToListAsync());
+                return users;
+            }
+            var matches = await _context.Users
+                                            .Where(r => r.UserName.ToLower().Contains(s.ToLower()))
+                                            .Select(r => new UserDTO{Id = r.Id, UserName = r.UserName})
+                                            .ToListAsync();
+            return matches;
+        }
+
         /*
-
-
         private async IAsyncEnumerable<Resource> GetResourcesAsync(IEnumerable<string>? resources)
         {
             var exist = await _context.Resources.Where(r => resources.Contains(r.Title))

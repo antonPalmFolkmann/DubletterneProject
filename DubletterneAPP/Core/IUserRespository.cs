@@ -9,5 +9,6 @@ namespace Core
         //Task<IReadOnlyCollection<UserDTO>> ReadAllByIdAsync();
         Task<Response> UpdateAsync(int userId, UserUpdateDTO user);
         Task<Response> DeleteAsync(int userId);
+        Task<IEnumerable<UserDTO>> Search(string s);
     }
 }

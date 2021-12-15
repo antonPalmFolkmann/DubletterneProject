@@ -3,29 +3,29 @@ using Infrastructure.Search;
 
 namespace Infrastructure.Tests.Search{
 
-    public class SearchValidaterTests : IDisposable{
+    public class SearchValidaterTests : IDisposable
+    {
+        [Theory]
+        [InlineData("a")]
+        [InlineData("abecat!")]
+        [InlineData("Search Tearm !? is S:T;R,A.N)G\n")]
+        public void SearchTerm_Is_Valid(string input){
 
-    [Theory]
-    [InlineData("a")]
-    [InlineData("abecat!")]
-    [InlineData("Search Tearm !? is S:T;R,A.N)G\n")]
-    public void SearchTerm_Is_Valid(string input){
+            var result = SearchValidater.ValidateSearchTermCharacters(input);
 
-        var result = SearchValidater.ValidateSearchTermCharacters(input);
+            Assert.True(result);
+        }
 
-        Assert.True(result);
-    }
+        [Theory]
+        [InlineData("s$¤")]
+        [InlineData("§")]
+        [InlineData("½")]
+        public void SearchTerm_Is_Not_Valid(string input){
 
-    [Theory]
-    [InlineData("s$¤")]
-    [InlineData("§")]
-    [InlineData("½")]
-    public void SearchTerm_Is_Not_Valid(string input){
+            var result = SearchValidater.ValidateSearchTermCharacters(input);
 
-        var result = SearchValidater.ValidateSearchTermCharacters(input);
-
-        Assert.False(result);
-    }
+            Assert.False(result);
+        }
         private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
@@ -36,9 +36,9 @@ namespace Infrastructure.Tests.Search{
                 {
                     // TODO: dispose managed state (managed objects)
                 }
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
-                disposedValue = true;
+                    // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                    // TODO: set large fields to null
+                    disposedValue = true;
             }
         }
         
