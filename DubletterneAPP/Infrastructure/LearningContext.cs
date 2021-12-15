@@ -27,7 +27,7 @@ public class LearningContextFactory : IDesignTimeDbContextFactory<LearningContex
     public LearningContext CreateDbContext(string[] args)
     {
 
-        var connectionString = "Server=tcp:dubletterne.database.windows.net,1433;Initial Catalog=Project;Persist Security Info=False;User ID={yourUser};Password={yourPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Authentication=\"Active Directory Password\";";
+        var connectionString = "Server=dubletterne.database.windows.net; Authentication=Active Directory Service Principal; Database=Project; User Id=94eabc4d-57ab-4d90-b5d8-92dad5c49f2e; Password=x~-7Q~th26rtfoBxGJx3aZF0IZAWedtFuXhGM";
 
         var optionsBuilder = new DbContextOptionsBuilder<LearningContext>().UseSqlServer(connectionString);
 

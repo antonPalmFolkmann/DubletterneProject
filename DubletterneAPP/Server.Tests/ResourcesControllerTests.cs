@@ -27,7 +27,7 @@ public class ResourcesControllerTests
 
         var expected = (Response.Created,created.Id);
         // Assert
-        Assert.Equal(expected, resultvalue);
+        Assert.Equal(expected.Id, resultvalue);
         Assert.Equal("Get", result?.ActionName);
     }
 

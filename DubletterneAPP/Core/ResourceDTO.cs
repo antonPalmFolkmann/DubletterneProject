@@ -41,6 +41,6 @@ namespace Core
     public record ResourceUpdateDTO : ResourceCreateDTO
     {
         public int Id { get; init; }
-        public DateTime Updated { get; init; }
+        public DateTime? Updated { get; init; }
     }
 }
