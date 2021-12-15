@@ -46,5 +46,7 @@ namespace Core
     {
         public int Id { get; init; }
         public DateTime Updated { get; init; }
+
+        public ICollection<string>? Resources { get; set; }
     }
 }

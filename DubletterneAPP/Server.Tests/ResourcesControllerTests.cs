@@ -12,7 +12,6 @@ public class ResourcesControllerTests
         var created = new ResourceDetailsDTO{
             Id = 1,
             Title = "Title number one", 
-            User = "user1", 
             Created = DateTime.Today, 
             Updated = null, 
             TextParagraphs = new List<string>{"Hello", "there"}, 
@@ -73,7 +72,6 @@ public class ResourcesControllerTests
         var resource = new ResourceDetailsDTO{
             Id = 1,
             Title = "Title number one", 
-            User = "user1", 
             Created = DateTime.Today, 
             Updated = null, 
             TextParagraphs = new List<string>{"Hello", "there"}, 

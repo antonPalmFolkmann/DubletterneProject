@@ -17,10 +17,6 @@
         <InputText id="Title" @bind-Value="resource.Title" class="form-control" />
     </div>
     <div class="form-group">
-        <label for="UserName">Username</label>
-        <InputText id="UserName" @bind-Value="resource.User" class="form-control" />
-    </div>
-    <div class="form-group">
         <label for="Created">Created</label>
         <InputDate id="Created" @bind-Value="resource.Created" class="form-control" />
     </div>
@@ -64,6 +60,8 @@
 
             NavigationManager.NavigateTo(uri);
         }
+
+        var addtouser = await Http.PutAsJsonAsync("api/users/", resource);
     }
 
     private void Cancel()
