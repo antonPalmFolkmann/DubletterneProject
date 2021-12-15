@@ -1,30 +1,23 @@
 using Infrastructure.Search;
 
-namespace Infrastructure.Tests.Search{
+namespace Infrastructure.Tests.Search {
 
-    public class SearchValidaterTests : IDisposable
-    {
-        [Theory]
-        [InlineData("a")]
-        [InlineData("abecat!")]
-        [InlineData("Search Tearm !? is S:T;R,A.N)G\n")]
-        public void SearchTerm_Is_Valid(string input){
-
-            var result = SearchValidater.ValidateSearchTermCharacters(input);
-
-            Assert.True(result);
-        }
+    public class SearchScoreTests : IDisposable{
 
         [Theory]
-        [InlineData("s$¤")]
-        [InlineData("§")]
-        [InlineData("½")]
-        public void SearchTerm_Is_Not_Valid(string input){
+        [InlineData("abe", 30)]
+        [InlineData("gorilla", 70)]
+        [InlineData("", 0)]
+        public void Takes_searchmactedstring_and_scores_it_correctly(string word, int expected){
+            //Arrange
 
-            var result = SearchValidater.ValidateSearchTermCharacters(input);
+            //Act
+            var actual = SearchScorer.ScoreMatch(word);
 
-            Assert.False(result);
+            //Assert
+            Assert.Equal(expected, actual);
         }
+
         private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
@@ -40,7 +33,7 @@ namespace Infrastructure.Tests.Search{
                     disposedValue = true;
             }
         }
-        
+
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method

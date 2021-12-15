@@ -38,6 +38,8 @@ public class SearchController : ControllerBase{
 
                 switch (searchRequestForm.searchParam){
                     case SearchParam.User:
+                        var n = await _userRepository.Search(s);
+                        matches = n.ToList<ISearchAble>();
                         break;
                     case SearchParam.Category:
                         break;
@@ -58,8 +60,8 @@ public class SearchController : ControllerBase{
                 }
             }
 
-        var orderedList = MatchSorter.SortMatchesHighestScoreFirst(matchesWithScore);
-        var z = PagedList<KeyValuePair<ISearchAble, int>>.ToPagedList(orderedList, searchRequestForm.PageNumber, searchRequestForm.PageSize);
+        var orderedList = MatchSorter.SortMatchesKeysHighestScoreFirst(matchesWithScore);
+        var z = PagedList<ISearchAble>.ToPagedList(orderedList, searchRequestForm.PageNumber, searchRequestForm.PageSize);
         
         Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(z.MetaData));
 

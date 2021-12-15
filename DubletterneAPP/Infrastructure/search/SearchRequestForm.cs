@@ -35,6 +35,20 @@ public class SearchRequestForm
     public SearchRequestForm(SearchParam searchParam, string searchTerm){
         this.searchParam = searchParam;
         this.searchTerm = searchTerm;
-    }
-*/
+
+        if (searchParam.Equals(SearchParam.User))
+        {
+            throw new NotImplementedException();
+            //Insert code for searching for a User
+        } else if (searchParam.Equals(SearchParam.Resource))
+        {
+            throw new NotImplementedException();
+            //Insert code for searching for a Resource
+        } else 
+        {
+            throw new NotImplementedException();
+            //Insert code for a search query with no chosen category
+        }
+    } */
+
 }
