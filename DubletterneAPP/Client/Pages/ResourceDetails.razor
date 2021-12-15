@@ -11,8 +11,15 @@
             @resource.Title
         </div>
         <div class="card-body">
-            <h5 class="card-title">Title @resource.Title</h5>
+            <h5 class="card-title">@resource.Title</h5>
             <p class="card-text">Author: @resource.User</p>
+            <h6>Paragraphs:</h6>
+            <table>
+                @foreach (var item in resource.TextParagraphs)
+                {
+                    <tr>@item</tr>
+                }
+            </table>
         </div>
         <div class="card-body">
             <button type="button" class="btn btn-primary" @onclick="Edit">Edit</button>

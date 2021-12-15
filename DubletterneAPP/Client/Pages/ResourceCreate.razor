@@ -56,10 +56,11 @@
         if (response.IsSuccessStatusCode)
         {
             Console.WriteLine("i succeded");
-            var createdID = await response.Content.ReadFromJsonAsync<int>();
-            Console.WriteLine("created: " + createdID);
+            var created = await response.Content.ReadFromJsonAsync<int>();
+            
+            Console.WriteLine("created: " + created);
 
-            var uri = $"{NavigationManager.BaseUri}resources/{createdID}";
+            var uri = $"{NavigationManager.BaseUri}resources/{created}";
 
             NavigationManager.NavigateTo(uri);
         }

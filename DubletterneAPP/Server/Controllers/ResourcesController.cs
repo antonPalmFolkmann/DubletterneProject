@@ -32,11 +32,15 @@ public class ResourcesController : ControllerBase
 
     [HttpPost]
     [ProducesResponseType(typeof((Response, int)), 201)]
-    public async Task<CreatedAtActionResult> Post(ResourceCreateDTO toCreate)
+    public async Task<ActionResult> Post(ResourceCreateDTO toCreate)
     {
         var (response, createdId) = await _repository.CreateAsync(toCreate);
 
-        return CreatedAtAction(nameof(Get), (response, createdId));
+        var tuple = (response, createdId);
+
+        System.Console.WriteLine("ID: " + tuple);
+
+        return CreatedAtAction(nameof(Get), tuple.createdId);
     }
 
     [HttpPut("{id}")]
