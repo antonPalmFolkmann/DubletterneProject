@@ -8,11 +8,16 @@
 
 <PageTitle>Users</PageTitle>
 
-<h1>Users</h1>
+<form>
+    <div class="search-field">
+        <input  class="search-input" type="text" placeholder="Enter title of resource" asp-for="SearchString" />
+        <input type="submit" value="Search" />
+    </div>
+</form>
 
-<p>
+<div class="modify-btns">
     <button class="btn btn-primary" @onclick="Create">New user</button>
-</p>
+</div>
 
 @if (users == null)
 {
@@ -25,7 +30,7 @@ else
             <tr>
                 <th>ID</th>
                 <th>UserName</th>
-                <th></th>
+                <th>View</th>
             </tr>
         </thead>
         <tbody>
@@ -78,3 +83,33 @@ else
         NavigationManager.NavigateTo(uri);
     }
 }
+
+<style>
+
+    .search-field {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        padding-top: 10px;
+        max-width: 50%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .search-input {
+        width: 100%;
+        height: 40px;
+    }
+
+    .modify-btns {
+        display: flex;
+        justify-content: left;
+        padding: 20px;
+        padding-top: 10px;
+        max-width: 50%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+
+</style>
