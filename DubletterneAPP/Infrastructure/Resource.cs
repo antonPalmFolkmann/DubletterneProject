@@ -10,7 +10,7 @@ namespace Infrastructure
         public string? Title { get; set; }
 
         [Required]
-        public string? User { get; set; }
+        public User User { get; set; }
 
         [Required]
         [DataType(DataType.DateTime)]

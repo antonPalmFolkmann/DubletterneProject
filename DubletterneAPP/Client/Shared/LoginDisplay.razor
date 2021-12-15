@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
+﻿@using DubletterneAPP.Client.Pages
+@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 @inject NavigationManager Navigation
@@ -7,6 +8,7 @@
 <AuthorizeView>
     <Authorized>
         Hello, @context.User.Identity?.Name!
+        <UserDB User="@context.User"/>
         <button class="nav-link btn btn-link" @onclick="BeginLogout">Log out</button>
     </Authorized>
     <NotAuthorized>

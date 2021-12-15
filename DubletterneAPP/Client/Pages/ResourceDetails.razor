@@ -13,30 +13,10 @@
             <button type="button" class="btn btn-danger" @onclick="Delete">Delete</button> <br>
             <button type="button" class="btn btn-secondary" @onclick="Back">Back</button> <br>
         </div>
-    </div>
-    <div class="right-column"> <!-- Right Column -->
-        @if (resource != null)
-        {
-            <h1> @resource.Title</h1>
-            <hr> 
-            <div class="resource-info">
-                <p>
-                    Created by user: @resource.User, at @resource.Created <br>
-                    Last updated: @resource.Updated
-                </p> 
-            </div>
-            
-            <div class="resource-content-container" >
-                <p> Description:<br></p> 
-                <div class="resource-content"> 
-                @foreach (var paragraph in resource.TextParagraphs)
-                {
-                    <p class="paragraphs">@paragraph</p>
-                }
-                </div>
-            </div>
-
-        }
+        <div class="card-body">
+            <h5 class="card-title">@resource.Title</h5>
+            <p class="card-text">Author: @resource.User?.UserName</p>
+        </div>
     </div>
 </div>
 
@@ -108,7 +88,6 @@
             resource = new ResourceDetailsDTO {
                 Id = 1,
                 Title = "Title",
-                User = "AntonFolkmann",
                 Created = DateTime.Today,
                 Updated = DateTime.Today,
                 TextParagraphs = new List<string>{"Hello", "there"},
