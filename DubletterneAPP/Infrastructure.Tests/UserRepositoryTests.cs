@@ -150,6 +150,7 @@ namespace Infrastructure.Tests
                 Created = DateTime.Today,
                 Updated = DateTime.Today,
                 Email = "YouAreAWizard@diagonal.com",
+                Resources = new List<string>()
             };
 
             //When

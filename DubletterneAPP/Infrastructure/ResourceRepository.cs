@@ -18,7 +18,6 @@ namespace Infrastructure
                                        select new ResourceDTO{
                                            Id = c.Id,
                                            Title = c.Title,
-                                           User = c.User
                                        };
 
 
@@ -30,11 +29,10 @@ namespace Infrastructure
             var entity = new Resource()
             {
                 Title = resource.Title,
-                User = resource.User,
+                User = _context.Users.Where(u => u.Id == resource.User.Id).First(),
                 Created = resource.Created,
                 TextParagraphs = await GetTextParagraphsAsync(resource.TextParagraphs).ToListAsync(),
                 ImageUrl = resource.ImageUrl
-
             };
 
             _context.Resources.Add(entity);
@@ -69,7 +67,7 @@ namespace Infrastructure
         public async Task<IReadOnlyCollection<ResourceDTO>> ReadAllAsync()
         {
             var resources = (await _context.Resources
-                                 .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title, User = r.User})
+                                 .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title})
                                  .ToListAsync())
                                  .AsReadOnly();
             return resources;
@@ -87,7 +85,6 @@ namespace Infrastructure
                                 .Select(r => new ResourceDetailsDTO{
                                     Id = r.Id,
                                     Title = r.Title,
-                                    User = r.User,
                                     Created = r.Created,
                                     Updated = r.Updated,
                                     TextParagraphs = r.TextParagraphs.Select(p => p.Paragraph).ToList(),
@@ -105,13 +102,12 @@ namespace Infrastructure
             var conflict = await _context.Resources
                                          .Where(r => r.Id != id)
                                          .Where(r => r.Title == resource.Title)
-                                         .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title, User = r.User})
+                                         .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title})
                                          .AnyAsync();
             
             if (conflict) return Response.Conflict;
 
             entity.Title = resource.Title;
-            entity.User = resource.User;
             entity.Created  = resource.Created;
             entity.TextParagraphs = await GetTextParagraphsAsync(resource.TextParagraphs).ToListAsync();
             entity.Updated = DateTime.Now;
@@ -135,13 +131,13 @@ namespace Infrastructure
         public async Task<IEnumerable<ResourceDTO>> Search(string s){
             if (string.IsNullOrWhiteSpace(s)){
                  var resources = (await _context.Resources
-                                 .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title, User = r.User})
+                                 .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title})
                                  .ToListAsync());
                 return resources;
             }
             var matches = await _context.Resources
                                             .Where(r => r.Title.ToLower().Contains(s.ToLower()))
-                                            .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title, User = r.User})
+                                            .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title})
                                             .ToListAsync();
             return matches;
         }
