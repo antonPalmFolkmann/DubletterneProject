@@ -52,24 +52,6 @@ namespace Infrastructure
             return await users.FirstOrDefaultAsync();
         } 
 
-        public async Task<Option<UserDetailsDTO>> ReadAsyncByUsername(string username)
-        { 
-            var users = from u in _context.Users
-                       where u.UserName == username
-                       select new UserDetailsDTO {
-                            Id = u.Id,
-                            FirstName = u.FirstName,
-                            LastName = u.LastName,
-                            UserName = u.UserName,
-                            Created = u.Created,
-                            Updated = u.Updated,
-                            Email = u.Email,
-                            Resources = u.Resources.Select(u => u.Title).ToList()
-                       };
-
-            return await users.FirstOrDefaultAsync();
-        }
-
         public async Task<IReadOnlyCollection<UserDTO>> ReadAllAsync() {
             
             var users = (await _context.Users
@@ -97,10 +79,6 @@ namespace Infrastructure
             entity.Updated = user.Updated;
             entity.Email = user.Email;
 
-            var existing = await _context.Resources.Where(r => user.Resources.Contains(r.Title)).ToListAsync();
-
-            entity.Resources =  existing;
-
             await _context.SaveChangesAsync();
             
             return Response.Updated; 
@@ -121,5 +99,20 @@ namespace Infrastructure
 
             return Response.Deleted;
         }
+
+        /*
+
+
+        private async IAsyncEnumerable<Resource> GetResourcesAsync(IEnumerable<string>? resources)
+        {
+            var exist = await _context.Resources.Where(r => resources.Contains(r.Title))
+                                                .ToDictionaryAsync(r => r.Title);
+            {
+                foreach (var resource in resources) {
+                    yield return exist.TryGetValue(resource, out var r) ? r : new Resource(resource);
+                }
+            }
+        }
+        */
     }
 }

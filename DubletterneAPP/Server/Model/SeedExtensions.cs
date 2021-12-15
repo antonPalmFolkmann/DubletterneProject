@@ -35,12 +35,12 @@ public static class SeedExtensions
             var askjaer = new User {FirstName = "Nicklas", LastName = "Askjaer", UserName = "nias",Created = DateTime.Today, Updated = DateTime.Now, Email = "nias@itu.dk"};
             var users = new[] {hjelmgaard, schiller, anton, frederik, crawley, askjaer};
 
-            var resource1 = new Resource { Created = DateTime.Today, Title = "Superman", TextParagraphs = new List<TextParagraph>{text1, text2, text3}, ImageUrl = "http://image.com"};
-            var resource2 = new Resource { Created = DateTime.Today, Title = "Spiderman", TextParagraphs = new List<TextParagraph>{text4, text5, text6}, ImageUrl = "http://image.com"};
-            var resource3 = new Resource { Created = DateTime.Today, Title = "Batman", TextParagraphs = new List<TextParagraph>{text1, text4, text2}, ImageUrl = "http://image.com"};
-            var resource4 = new Resource { Created = DateTime.Today, Title = "Ironman", TextParagraphs = new List<TextParagraph>{text6, text5, text1}, ImageUrl = "http://image.com"};
-            var resource5 = new Resource { Created = DateTime.Today, Title = "Aquaman", TextParagraphs = new List<TextParagraph>{text5, text6, text2}, ImageUrl = "http://image.com"};
-            var resource6 = new Resource { Created = DateTime.Today, Title = "Ant-Man", TextParagraphs = new List<TextParagraph>{text4, text2, text3}, ImageUrl = "http://image.com"};
+            var resource1 = new Resource { User = hjelmgaard.UserName, Created = DateTime.Today, Title = "Superman", TextParagraphs = new List<TextParagraph>{text1, text2, text3}, ImageUrl = "http://image.com"};
+            var resource2 = new Resource { User = schiller.UserName, Created = DateTime.Today, Title = "Spiderman", TextParagraphs = new List<TextParagraph>{text4, text5, text6}, ImageUrl = "http://image.com"};
+            var resource3 = new Resource { User = anton.UserName, Created = DateTime.Today, Title = "Batman", TextParagraphs = new List<TextParagraph>{text1, text4, text2}, ImageUrl = "http://image.com"};
+            var resource4 = new Resource { User = frederik.UserName, Created = DateTime.Today, Title = "Ironman", TextParagraphs = new List<TextParagraph>{text6, text5, text1}, ImageUrl = "http://image.com"};
+            var resource5 = new Resource { User = crawley.UserName, Created = DateTime.Today, Title = "Aquaman", TextParagraphs = new List<TextParagraph>{text5, text6, text2}, ImageUrl = "http://image.com"};
+            var resource6 = new Resource { User = askjaer.UserName, Created = DateTime.Today, Title = "Ant-Man", TextParagraphs = new List<TextParagraph>{text4, text2, text3}, ImageUrl = "http://image.com"};
 
             hjelmgaard.Resources.Add(resource1);
             schiller.Resources.Add(resource2);

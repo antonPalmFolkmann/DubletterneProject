@@ -29,18 +29,9 @@ public class UsersController : ControllerBase
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(UserDetailsDTO), StatusCodes.Status200OK)]
-    [HttpGet("{id:int}")]
+    [HttpGet("{id}")]
     public async Task<UserDetailsDTO> Get(int id)
         => (await _repository.ReadAsyncById(id));
-        
-
-    [AllowAnonymous]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(UserDetailsDTO), StatusCodes.Status200OK)]
-    [HttpGet("{username}")]
-    public async Task<UserDetailsDTO> Get(string username)
-        => (await _repository.ReadAsyncByUsername(username));
-
 
     [HttpPost]
     public async Task<int> Post(UserCreateDTO user)

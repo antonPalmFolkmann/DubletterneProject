@@ -24,6 +24,7 @@ else
         <thead>
             <tr>
                 <th>ID</th>
+                <th>User</th>
                 <th>Title</th>
                 <th></th>
             </tr>
@@ -33,6 +34,7 @@ else
             {
                 <tr>
                     <td>@resource.Id</td>
+                    <td>@resource.User</td>
                     <td>@resource.Title</td>
                     <td><button class="btn btn-info" @onclick="@(() => View(resource))">View</button></td>
                 </tr>
@@ -57,10 +59,7 @@ else
             var list = Enumerable.Range(1, 5).Select(index => new ResourceDTO
             {
                 Id = index,
-                User = new UserDTO{
-                    Id = index,
-                    UserName = String.Format("User number {0}", index)
-                },
+                User = String.Format("User id {0}", index),
                 Title = String.Format("Title number {0}", index)
             })
             .ToArray();
