@@ -200,21 +200,65 @@ namespace Infrastructure.Tests
         }
 
         [Fact]
-        public async void Search_for_user_by_no_search_term_and_return_all_Users()
+        public async void Search_for_user_by_partiallyUserName_and_return_User()
         {
             //Arrange 
-            var searchTerm = " ";
+            var searchTerm = "tbw";
+            var expected = new List<UserDTO>()
+            {
+                new UserDTO{Id = 1, UserName = "TBWL"}
+            };
+            
+            //Act
+            var actual = await _repository.Search(searchTerm);
+
+            //Assert
+            Assert.Equal(expected, actual); 
+        }
+
+        [Fact]
+        public async void Search_for_users_with_common_leter_and_return_many_Users()
+        {
+            //Arrange 
+            var searchTerm = "t";
+            
+            //Act
+            var actual = await _repository.Search(searchTerm);
+            var actualOrdered = actual.OrderBy(user => user.Id);
+
+
+
+            //Assert
+            Assert.Collection(actualOrdered,
+            user => Assert.Equal(new UserDTO{Id = 1, UserName = "TBWL"}, user),
+            user => Assert.Equal(new UserDTO{Id = 2, UserName = "Voldemort"}, user),
+            user => Assert.Equal(new UserDTO{Id = 4, UserName = "Ferret"}, user),
+            user => Assert.Equal(new UserDTO{Id = 5, UserName = "Padfoot"}, user)
+            );
+
+        }
+
+        [Theory]
+        [InlineData(" ")]
+        [InlineData("")]
+        [InlineData("\n")]
+        public async void Search_for_user_by_no_search_term_and_return_all_Users(string input)
+        {
+            //Arrange 
+            var searchTerm = input;
 
             //Act
             var actual = await _repository.Search(searchTerm);
-            
+            var actualOrdered = actual.OrderBy(user => user.Id);
+
             //Assert
-            Assert.Collection(actual, 
+            Assert.Collection(actualOrdered,
             user => Assert.Equal(new UserDTO{Id = 1, UserName = "TBWL"}, user),
             user => Assert.Equal(new UserDTO{Id = 2, UserName = "Voldemort"}, user),
             user => Assert.Equal(new UserDTO{Id = 3, UserName = "WeasleyIsKing"}, user),
             user => Assert.Equal(new UserDTO{Id = 4, UserName = "Ferret"}, user),
-            user => Assert.Equal(new UserDTO{Id = 5, UserName = "Padfoot"}, user));
+            user => Assert.Equal(new UserDTO{Id = 5, UserName = "Padfoot"}, user)
+            );
         }
 
         public void Dispose()

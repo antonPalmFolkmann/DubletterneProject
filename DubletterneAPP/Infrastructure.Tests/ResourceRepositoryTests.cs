@@ -36,7 +36,17 @@ namespace Infrastructure.Tests
                 ImageUrl = "image2.com"
             };
 
-            context.AddRange(resource1, resource2);
+            var resource3 = new Resource
+            {
+                Id = 3,
+                Title = "StarWars",
+                User = "History",
+                Created = DateTime.Today,
+                TextParagraphs =  new List<TextParagraph>{new TextParagraph("Hello There"), new TextParagraph("General Kenobi")},
+                ImageUrl = "image3.com"
+            };
+
+            context.AddRange(resource1, resource2, resource3);
 
             context.SaveChanges();
 
@@ -62,7 +72,7 @@ namespace Infrastructure.Tests
             
             //Assert
             Assert.Equal(Response.Created, created.Item1);
-            Assert.Equal(3, created.Item2);
+            Assert.Equal(4, created.Item2);
         }
 
         [Fact]
@@ -201,8 +211,88 @@ namespace Infrastructure.Tests
 
              Assert.Collection(resources, 
              resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!", User = "UserFuser"}, resource),
-             resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate", User = "Animals"}, resource)
+             resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate", User = "Animals"}, resource),
+            resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User = "History"}, resource)
              );
+        }
+
+
+        [Fact]
+        public async void Search_for_Resource_by_title_and_return_Resourse()
+        {
+            //Arrange 
+            var searchTerm = "hello, world!";
+            var expected = new List<ResourceDTO>()
+            {
+                new ResourceDTO{Id = 1, Title = "Hello, world!", User = "UserFuser"}
+            };
+            
+            //Act
+            var actual = await _repository.Search(searchTerm);
+
+            //Assert
+            Assert.Equal(expected, actual); 
+        }
+
+
+        [Fact]
+        public async void Search_for_Resource_by_partial_title_and_return_Resource()
+        {
+            //Arrange 
+            var searchTerm = "libe";
+            var expected = new List<ResourceDTO>()
+            {
+                new ResourceDTO{Id = 2, Title = "Liberate", User = "Animals"}
+            };
+            
+            //Act
+            var actual = await _repository.Search(searchTerm);
+
+            //Assert
+            Assert.Equal(expected, actual); 
+        }
+
+
+        [Fact]
+        public async void Search_for_resource_with_common_leter_and_return_many_resources()
+        {
+            //Arrange 
+            var searchTerm = "w";
+            
+            //Act
+            var actual = await _repository.Search(searchTerm);
+            var actualOrdered = actual.OrderBy(resourse => resourse.Id);
+
+
+
+            //Assert
+            Assert.Collection(actualOrdered, 
+                resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!", User = "UserFuser"}, resource),
+                resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User = "History"}, resource)
+            );
+
+        }
+
+
+        [Theory]
+        [InlineData(" ")]
+        [InlineData("")]
+        [InlineData("\n")]
+        public async void Search_for_resource_by_no_search_term_and_return_all_resources(string input)
+        {
+            //Arrange 
+            var searchTerm = input;
+
+            //Act
+            var actual = await _repository.Search(searchTerm);
+            var actualOrdered = actual.OrderBy(user => user.Id);
+
+            //Assert
+            Assert.Collection(actualOrdered, 
+                resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!", User = "UserFuser"}, resource),
+                resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate", User = "Animals"}, resource),
+                resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User = "History"}, resource)
+            );
         }
 
         public void Dispose()
