@@ -4,27 +4,84 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 
-@if (user != null)
-{
-    <div class="card" style="width: 18rem;">
-        <div class="card-header">
-            @user.UserName
-        </div>
-        <div class="card-body">
-            <h5 class="card-title">Name: @user.FirstName @user.LastName</h5>
-            <p class="card-text">Email: @user.Email</p>
-        </div>
-        <div class="card-body">
-            <button type="button" class="btn btn-primary" @onclick="Edit">Edit</button>
-            <button type="button" class="btn btn-danger" @onclick="Delete">Delete</button>
-        </div>
-    </div>
-}
 
-<div class="form-group">
-    <br />
-    <button type="button" class="btn btn-secondary" @onclick="Back">Back</button>
+
+<div class="user-info-column"> <!-- Right Column -->
+    @if (user != null)
+    {
+        <h1> @user.FirstName @user.LastName</h1>
+        <hr> 
+        <div class="user-info">
+            <p>
+                <h3> User information: </h3>
+                Username: @user.UserName <br>
+                Email: @user.Email <br>
+                Member since: @user.Created
+            </p> 
+        </div>
+        
+        <div class="user-content-container" >
+            <p class="resource-info"> Resources:</p> 
+            <div class="resource-content"> 
+            @foreach (var resource in user.Resources)
+            {
+                <p class="resources">@resource</p>
+            }
+            </div>
+        </div>
+    
+        <div class="buttons-group">
+            <button type="button" class="btn btn-primary" @onclick="Edit">Edit</button> <br>
+            <button type="button" class="btn btn-danger" @onclick="Delete">Delete</button> <br>
+            <button type="button" class="btn btn-secondary" @onclick="Back">Back</button> <br>
+        </div>
+    }
 </div>
+
+<style>
+    .buttons-group {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .buttons-group button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 150px;
+        margin-top: 10px;
+    }
+
+    .user-info-column {
+        float:left;
+        width:100%;
+        padding-left: 3%;
+        padding-right: 3%;
+    }
+
+    .user-content-container {
+        display: block;
+        justify-content: left;
+        max-width: 100%;
+    }
+
+    .resource-content {
+        border: 1px solid grey;
+    }
+
+    .resource-info {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .resources {
+        padding-left: 1%;
+        padding-right: 1%;
+        padding-top: 1%;
+    }
+</style>
+
 
 @code {
     [Parameter]
@@ -86,3 +143,5 @@
         NavigationManager.NavigateTo(uri);
     }
 }
+
+

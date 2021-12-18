@@ -27,7 +27,7 @@
             </div>
             
             <div class="resource-content-container" >
-                <p> Description:<br></p> 
+                <p class="paragraphs-info"> Description:</p> 
                 <div class="resource-content"> 
                 @foreach (var paragraph in resource.TextParagraphs)
                 {
@@ -76,6 +76,11 @@
 
     .resource-content {
         border: 1px solid grey;
+    }
+
+    .paragraphs-info {
+        font-weight: bold;
+        margin-bottom: 5px;
     }
 
     .paragraphs {
