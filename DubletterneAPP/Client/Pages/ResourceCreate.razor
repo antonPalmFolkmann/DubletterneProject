@@ -9,7 +9,7 @@
 
 <hr />
 
-<EditForm Model="@resource" OnValidSubmit="@HandleValidSubmit">
+<EditForm Model="@resource" OnSubmit="@HandleSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="form-group">
@@ -37,6 +37,8 @@
 </EditForm>
 
 @code {
+    [Parameter]
+    public ClaimsPrincipal User {get; set;}
     private ResourceCreateDTO resource = new();
 
     private string TextParagraphs
@@ -45,7 +47,30 @@
         set => resource.TextParagraphs = value.Split(Environment.NewLine).Select(p => p.Trim()).Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
     }
 
-    private async Task HandleValidSubmit()
+    private async Task<UserDTO> GetUserDTO(){
+        var username = User.Claims.First(c => c.Type == "preferred_username").Value;
+        var strings = username.Split("@");
+        var user = await Http.GetFromJsonAsync<UserDetailsDTO>($"api/users/{strings[0]}");
+
+        return new UserDTO{
+            Id = user.Id,
+            UserName = user.UserName
+        };
+    }
+
+    private async Task HandleSubmit(){
+        resource.User = await GetUserDTO();
+        resource.Created = DateTime.Today;
+        var editContext = new EditContext(resource);
+
+        if (editContext != null && editContext.Validate()){
+            await CreateNewResource();
+            await Task.CompletedTask;
+        }
+
+    }
+
+    private async Task CreateNewResource()
     {
         var response = await Http.PostAsJsonAsync("api/Resources", resource);
 
