@@ -6,7 +6,7 @@ namespace Core
     {
         public int Id { get; set; }
         public string? Title { get; set; }
-        public string? User { get; set; }
+        public UserDTO User { get; set; }
     }
 
     public record ResourceDetailsDTO : ResourceDTO
@@ -24,7 +24,7 @@ namespace Core
         public string? Title { get; set; }
 
         [Required]
-        public String? User { get; set; }
+        public UserDTO User { get; set; }
 
         [Required]
         [DataType(DataType.DateTime)]

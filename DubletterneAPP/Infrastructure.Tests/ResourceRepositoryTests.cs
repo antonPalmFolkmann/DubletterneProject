@@ -16,11 +16,44 @@ namespace Infrastructure.Tests
             var context = new LearningContext(builder.Options);
             context.Database.EnsureCreated();
 
+            var user1 = new User{
+                Id = 1,
+                FirstName = "User",
+                LastName = "Fuser",
+                UserName = "UserFuser",
+                Created = DateTime.Now,
+                Updated = null,
+                Email = "userfuser@itu.dk",
+                Resources = null
+            };
+
+            var user2 = new User{
+                Id = 2,
+                FirstName = "A",
+                LastName = "Nimals",
+                UserName = "Animals",
+                Created = DateTime.Now,
+                Updated = null,
+                Email = "animals@itu.dk",
+                Resources = null
+            };
+
+            var user3 = new User{
+                Id = 3,
+                FirstName = "His",
+                LastName = "Tory",
+                UserName = "History",
+                Created = DateTime.Now,
+                Updated = null,
+                Email = "history@itu.dk",
+                Resources = null
+            };
+
             var resource1 = new Resource
             {
                 Id = 1,
                 Title = "Hello, world!",
-                User = "UserFuser",
+                User = user1,
                 Created = DateTime.Today,
                 TextParagraphs =  new List<TextParagraph>{new TextParagraph("Hello!"), new TextParagraph("How are you?")},
                 ImageUrl = "image.com"
@@ -30,7 +63,7 @@ namespace Infrastructure.Tests
             {
                 Id = 2,
                 Title = "Liberate",
-                User = "Animals",
+                User = user2,
                 Created = DateTime.Today,
                 TextParagraphs =  new List<TextParagraph>{new TextParagraph("Gutentag"), new TextParagraph("Come stai?")},
                 ImageUrl = "image2.com"
@@ -40,13 +73,23 @@ namespace Infrastructure.Tests
             {
                 Id = 3,
                 Title = "StarWars",
-                User = "History",
+                User = user3,
                 Created = DateTime.Today,
                 TextParagraphs =  new List<TextParagraph>{new TextParagraph("Hello There"), new TextParagraph("General Kenobi")},
                 ImageUrl = "image3.com"
             };
 
-            context.AddRange(resource1, resource2, resource3);
+            var resource4 = new Resource
+            {
+                Id = 4,
+                Title = "Dune",
+                User = user2,
+                Created = DateTime.Today,
+                TextParagraphs =  new List<TextParagraph>{new TextParagraph("For House Atreides"), new TextParagraph("Arrakis is my Dune")},
+                ImageUrl = "image4.com"
+            };
+
+            context.AddRange(resource1, resource2, resource3, resource4);
 
             context.SaveChanges();
 
@@ -61,7 +104,10 @@ namespace Infrastructure.Tests
             var resource = new ResourceCreateDTO
             {
                 Title = "Foo",
-                User = "Bar",
+                User = new UserDTO{
+                    Id = 1,
+                    UserName = "hjpo"
+                },
                 Created = DateTime.Today,
                 TextParagraphs = new List<string> { "string1", "string2", "...", "stringN" },
                 ImageUrl = "image.com"
@@ -72,7 +118,7 @@ namespace Infrastructure.Tests
             
             //Assert
             Assert.Equal(Response.Created, created.Item1);
-            Assert.Equal(4, created.Item2);
+            Assert.Equal(5, created.Item2);
         }
 
         [Fact]
@@ -82,7 +128,10 @@ namespace Infrastructure.Tests
             var resource = new ResourceCreateDTO
             {
                 Title = "Hello, world!",
-                User = "UserFuser",
+                User = new UserDTO{
+                    Id = 1,
+                    UserName = "hjpo"
+                },
                 Created = DateTime.Today,
                 TextParagraphs = new List<string> { "Hello!", "How are you?" },
                 ImageUrl = "image.com"
@@ -127,7 +176,6 @@ namespace Infrastructure.Tests
                 Id = 1,
                 Updated = DateTime.Now,
                 Title = "Keepo",
-                User = "Kappa",
                 Created = DateTime.Today,
                 TextParagraphs = new List<string> { "Hello!", "How are you?" },
                 ImageUrl = "image.com"
@@ -147,7 +195,6 @@ namespace Infrastructure.Tests
                 Id = 69,
                 Updated = DateTime.Now,
                 Title = "Keepo",
-                User = "Kappa"
             };
 
             var updated = await _repository.UpdateAsync(69, resource);
@@ -163,7 +210,6 @@ namespace Infrastructure.Tests
                 Id = 2,
                 Updated = DateTime.Now,
                 Title = "Hello, world!",
-                User = "People too",
                 Created = DateTime.Today,
                 TextParagraphs = new List<string> { "Hello!", "How are you?" },
                 ImageUrl = "image.com"
@@ -181,7 +227,6 @@ namespace Infrastructure.Tests
             {
                 Id = 2,
                 Title = "Liberate",
-                User = "Animals",
                 Created = DateTime.Today,
                 TextParagraphs =  new List<TextParagraph>{new TextParagraph("Gutentag"), new TextParagraph("Come stai?")},
                 ImageUrl = "image2.com"
@@ -210,12 +255,28 @@ namespace Infrastructure.Tests
              var resources = await _repository.ReadAllAsync();
 
              Assert.Collection(resources, 
-             resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!", User = "UserFuser"}, resource),
-             resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate", User = "Animals"}, resource),
-            resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User = "History"}, resource)
+             resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!", User = new UserDTO{Id=1, UserName= "UserFuser"}}, resource),
+             resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate", User = new UserDTO{Id=2, UserName = "Animals"}}, resource),
+             resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User = new UserDTO{Id=3, UserName= "History"}}, resource),
+             resource => Assert.Equal(new ResourceDTO{Id = 4, Title = "Dune", User = new UserDTO{Id=2, UserName ="Animals"}}, resource)
              );
         }
 
+        [Fact]
+        public async void ReadAllByAuthorAsync_returns_all_Resources_made_by_User()
+        {
+
+            var user = new UserDTO{};
+            user.Id = 2;
+            user.UserName = "Animals";
+
+            var resources = await _repository.ReadAllByAuthorAsync(user);
+
+            Assert.Collection(resources, 
+             resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate", User = new UserDTO{Id=2, UserName="Animals"}}, resource),
+             resource => Assert.Equal(new ResourceDTO{Id = 4, Title = "Dune", User = new UserDTO{Id=2, UserName="Animals"}}, resource)
+             );
+        }
 
         [Fact]
         public async void Search_for_Resource_by_title_and_return_Resourse()
@@ -224,7 +285,7 @@ namespace Infrastructure.Tests
             var searchTerm = "hello, world!";
             var expected = new List<ResourceDTO>()
             {
-                new ResourceDTO{Id = 1, Title = "Hello, world!", User = "UserFuser"}
+                new ResourceDTO{Id = 1, Title = "Hello, world!", User = new UserDTO{Id=1, UserName ="UserFuser"}}
             };
             
             //Act
@@ -235,6 +296,8 @@ namespace Infrastructure.Tests
         }
 
 
+
+
         [Fact]
         public async void Search_for_Resource_by_partial_title_and_return_Resource()
         {
@@ -242,7 +305,7 @@ namespace Infrastructure.Tests
             var searchTerm = "libe";
             var expected = new List<ResourceDTO>()
             {
-                new ResourceDTO{Id = 2, Title = "Liberate", User = "Animals"}
+                new ResourceDTO{Id = 2, Title = "Liberate", User = new UserDTO{Id=2, UserName ="Animals"}}
             };
             
             //Act
@@ -267,8 +330,8 @@ namespace Infrastructure.Tests
 
             //Assert
             Assert.Collection(actualOrdered, 
-                resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!", User = "UserFuser"}, resource),
-                resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User = "History"}, resource)
+                resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!", User=new UserDTO{Id=1, UserName ="UserFuser"}}, resource),
+                resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User=new UserDTO{Id=3, UserName ="History"}}, resource)
             );
 
         }
@@ -289,9 +352,10 @@ namespace Infrastructure.Tests
 
             //Assert
             Assert.Collection(actualOrdered, 
-                resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!", User = "UserFuser"}, resource),
-                resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate", User = "Animals"}, resource),
-                resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User = "History"}, resource)
+                resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!", User = new UserDTO{Id=1, UserName ="UserFuser"}}, resource),
+                resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate", User = new UserDTO{Id=2, UserName ="Animals"}}, resource),
+                resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User = new UserDTO{Id=3, UserName ="History"}}, resource),
+                resource => Assert.Equal(new ResourceDTO{Id = 4, Title = "Dune", User = new UserDTO{Id=2, UserName ="Animals"}}, resource)
             );
         }
 
