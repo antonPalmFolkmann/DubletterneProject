@@ -79,7 +79,17 @@ namespace Infrastructure.Tests
                 ImageUrl = "image3.com"
             };
 
-            context.AddRange(resource1, resource2, resource3);
+            var resource4 = new Resource
+            {
+                Id = 4,
+                Title = "Dune",
+                User = user2,
+                Created = DateTime.Today,
+                TextParagraphs =  new List<TextParagraph>{new TextParagraph("For House Atreides"), new TextParagraph("Arrakis is my Dune")},
+                ImageUrl = "image4.com"
+            };
+
+            context.AddRange(resource1, resource2, resource3, resource4);
 
             context.SaveChanges();
 
@@ -108,7 +118,7 @@ namespace Infrastructure.Tests
             
             //Assert
             Assert.Equal(Response.Created, created.Item1);
-            Assert.Equal(4, created.Item2);
+            Assert.Equal(5, created.Item2);
         }
 
         [Fact]
@@ -245,12 +255,28 @@ namespace Infrastructure.Tests
              var resources = await _repository.ReadAllAsync();
 
              Assert.Collection(resources, 
-             resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!"}, resource),
-             resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate"}, resource),
-             resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars"}, resource)
+             resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!", User = new UserDTO{Id=1, UserName= "UserFuser"}}, resource),
+             resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate", User = new UserDTO{Id=2, UserName = "Animals"}}, resource),
+             resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User = new UserDTO{Id=3, UserName= "History"}}, resource),
+             resource => Assert.Equal(new ResourceDTO{Id = 4, Title = "Dune", User = new UserDTO{Id=2, UserName ="Animals"}}, resource)
              );
         }
 
+        [Fact]
+        public async void ReadAllByAuthorAsync_returns_all_Resources_made_by_User()
+        {
+
+            var user = new UserDTO{};
+            user.Id = 2;
+            user.UserName = "Animals";
+
+            var resources = await _repository.ReadAllByAuthorAsync(user);
+
+            Assert.Collection(resources, 
+             resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate", User = new UserDTO{Id=2, UserName="Animals"}}, resource),
+             resource => Assert.Equal(new ResourceDTO{Id = 4, Title = "Dune", User = new UserDTO{Id=2, UserName="Animals"}}, resource)
+             );
+        }
 
         [Fact]
         public async void Search_for_Resource_by_title_and_return_Resourse()
@@ -268,6 +294,8 @@ namespace Infrastructure.Tests
             //Assert
             Assert.Equal(expected, actual); 
         }
+
+
 
 
         [Fact]
@@ -326,7 +354,8 @@ namespace Infrastructure.Tests
             Assert.Collection(actualOrdered, 
                 resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!", User = new UserDTO{Id=1, UserName ="UserFuser"}}, resource),
                 resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate", User = new UserDTO{Id=2, UserName ="Animals"}}, resource),
-                resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User = new UserDTO{Id=3, UserName ="History"}}, resource)
+                resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User = new UserDTO{Id=3, UserName ="History"}}, resource),
+                resource => Assert.Equal(new ResourceDTO{Id = 4, Title = "Dune", User = new UserDTO{Id=2, UserName ="Animals"}}, resource)
             );
         }
 
