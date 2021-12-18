@@ -41,6 +41,16 @@
     public ClaimsPrincipal User {get; set;}
     private ResourceCreateDTO resource = new();
 
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authStateProvider.GetAuthenticationStateAsync();
+        var userAuthState = authState.User;
+        var username = userAuthState.Claims.First(c => c.Type == "preferred_username").Value;
+        var strings = username.Split("@");
+        var user = await Http.GetFromJsonAsync<UserDetailsDTO>($"api/users/{strings[0]}");
+        resource.User = new UserDTO{Id = user.Id, UserName = user.UserName};
+    }
+
     private string TextParagraphs
     {
         get => string.Join(Environment.NewLine, resource.TextParagraphs);
