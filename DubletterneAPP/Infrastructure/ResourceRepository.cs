@@ -73,9 +73,9 @@ namespace Infrastructure
             return resources;
         }
 
-        public async Task<IReadOnlyCollection<ResourceDTO>> ReadAllByAuthorAsync(UserDTO user)
+        public async Task<IReadOnlyCollection<ResourceDTO>> ReadAllByAuthorAsync(string username)
         {
-            var resources = (await _context.Resources.Where(r => r.User.Id == user.Id)
+            var resources = (await _context.Resources.Where(r => r.User.UserName == username)
                                                      .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title, User = new UserDTO{Id = r.User.Id, UserName = r.User.UserName}})
                                                      .ToListAsync())
                                                      .AsReadOnly();
