@@ -36,11 +36,7 @@ public class ResourcesController : ControllerBase
     public async Task<ActionResult> Post(ResourceCreateDTO toCreate)
     {
         var (response, createdId) = await _repository.CreateAsync(toCreate);
-
         var tuple = (response, createdId);
-
-        System.Console.WriteLine("ID: " + tuple);
-
         return CreatedAtAction(nameof(Get), tuple.createdId);
     }
 

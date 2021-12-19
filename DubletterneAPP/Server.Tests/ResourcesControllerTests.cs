@@ -86,18 +86,18 @@ public class ResourcesControllerTests
         Assert.Equal(resource, response.Value);
     }
 
-     [Fact]
-    public async Task Put_updates_Character()
+    [Fact]
+    public async Task Put_updates_Resource()
     {
         // Arrange
         var logger = new Mock<ILogger<ResourcesController>>();
-        var character = new ResourceUpdateDTO();
+        var resource = new ResourceUpdateDTO();
         var repository = new Mock<IResourceRepository>();
-        repository.Setup(m => m.UpdateAsync(1, character)).ReturnsAsync(Response.Updated);
+        repository.Setup(m => m.UpdateAsync(1, resource)).ReturnsAsync(Response.Updated);
         var controller = new ResourcesController(logger.Object, repository.Object);
 
         // Act
-        var response = await controller.Put(1, character);
+        var response = await controller.Put(1, resource);
 
         // Assert
         Assert.IsType<NoContentResult>(response);
@@ -108,13 +108,13 @@ public class ResourcesControllerTests
     {
         // Arrange
         var logger = new Mock<ILogger<ResourcesController>>();
-        var character = new ResourceUpdateDTO();
+        var resource = new ResourceUpdateDTO();
         var repository = new Mock<IResourceRepository>();
-        repository.Setup(m => m.UpdateAsync(1, character)).ReturnsAsync(Response.NotFound);
+        repository.Setup(m => m.UpdateAsync(1, resource)).ReturnsAsync(Response.NotFound);
         var controller = new ResourcesController(logger.Object, repository.Object);
 
         // Act
-        var response = await controller.Put(1, character);
+        var response = await controller.Put(1, resource);
 
         // Assert
         Assert.IsType<NotFoundResult>(response);
