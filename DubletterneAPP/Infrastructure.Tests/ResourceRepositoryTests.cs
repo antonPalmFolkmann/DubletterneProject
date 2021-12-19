@@ -270,7 +270,7 @@ namespace Infrastructure.Tests
             user.Id = 2;
             user.UserName = "Animals";
 
-            var resources = await _repository.ReadAllByAuthorAsync(user);
+            var resources = await _repository.ReadAllByAuthorAsync(user.UserName);
 
             Assert.Collection(resources, 
              resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate", User = new UserDTO{Id=2, UserName="Animals"}, ImageUrl="image2.com"}, resource),
