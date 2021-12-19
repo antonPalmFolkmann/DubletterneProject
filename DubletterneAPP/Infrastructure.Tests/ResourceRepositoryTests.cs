@@ -285,7 +285,7 @@ namespace Infrastructure.Tests
             var searchTerm = "hello, world!";
             var expected = new List<ResourceDTO>()
             {
-                new ResourceDTO{Id = 1, Title = "Hello, world!", User = new UserDTO{Id=1, UserName ="UserFuser"}}
+                new ResourceDTO{Id = 1, Title = "Hello, world!", User = new UserDTO{Id=1, UserName ="UserFuser"}, ImageUrl="image.com"}
             };
             
             //Act
@@ -305,7 +305,7 @@ namespace Infrastructure.Tests
             var searchTerm = "libe";
             var expected = new List<ResourceDTO>()
             {
-                new ResourceDTO{Id = 2, Title = "Liberate", User = new UserDTO{Id=2, UserName ="Animals"}}
+                new ResourceDTO{Id = 2, Title = "Liberate", User = new UserDTO{Id=2, UserName ="Animals"}, ImageUrl="image2.com"}
             };
             
             //Act
@@ -330,8 +330,8 @@ namespace Infrastructure.Tests
 
             //Assert
             Assert.Collection(actualOrdered, 
-                resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!", User=new UserDTO{Id=1, UserName ="UserFuser"}}, resource),
-                resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User=new UserDTO{Id=3, UserName ="History"}}, resource)
+                resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!", User=new UserDTO{Id=1, UserName ="UserFuser"}, ImageUrl="image.com"}, resource),
+                resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User=new UserDTO{Id=3, UserName ="History"}, ImageUrl="image3.com"}, resource)
             );
 
         }
@@ -352,10 +352,10 @@ namespace Infrastructure.Tests
 
             //Assert
             Assert.Collection(actualOrdered, 
-                resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!", User = new UserDTO{Id=1, UserName ="UserFuser"}}, resource),
-                resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate", User = new UserDTO{Id=2, UserName ="Animals"}}, resource),
-                resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User = new UserDTO{Id=3, UserName ="History"}}, resource),
-                resource => Assert.Equal(new ResourceDTO{Id = 4, Title = "Dune", User = new UserDTO{Id=2, UserName ="Animals"}}, resource)
+                resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!", User = new UserDTO{Id=1, UserName ="UserFuser"}, ImageUrl="image.com"}, resource),
+                resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate", User = new UserDTO{Id=2, UserName ="Animals"}, ImageUrl="image2.com"}, resource),
+                resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User = new UserDTO{Id=3, UserName ="History"}, ImageUrl="image3.com"}, resource),
+                resource => Assert.Equal(new ResourceDTO{Id = 4, Title = "Dune", User = new UserDTO{Id=2, UserName ="Animals"}, ImageUrl="image4.com"}, resource)
             );
         }
 
