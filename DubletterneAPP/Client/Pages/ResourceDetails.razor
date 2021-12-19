@@ -21,7 +21,7 @@
             <hr> 
             <div class="resource-info">
                 <p>
-                    Created by user: @resource.User.UserName, at @resource.Created <br>
+                    Created by user: <a href="@NavigationManager.BaseUri/users/@resource.User.Id">@resource.User.UserName</a>, at @resource.Created <br>
                     Last updated: @resource.Updated
                 </p>
             </div>

@@ -25,9 +25,16 @@ public class ResourcesController : ControllerBase
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ResourceDetailsDTO), StatusCodes.Status200OK)]
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<ResourceDetailsDTO>> Get(int id)
         => (await _repository.ReadAsync(id)).ToActionResult();
+
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ResourceDetailsDTO), StatusCodes.Status200OK)]
+    [HttpGet("{user}")]
+    public async Task<IReadOnlyCollection<ResourceDTO>> Get(string user)
+        => await _repository.ReadAllByAuthorAsync(user);
 
 
 

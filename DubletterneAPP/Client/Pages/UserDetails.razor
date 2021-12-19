@@ -23,9 +23,9 @@
         <div class="user-content-container" >
             <p class="resource-info"> Resources:</p> 
             <div class="resource-content"> 
-            @foreach (var resource in user.Resources)
+            @foreach (var resource in resources)
             {
-                <p class="resources">@resource</p>
+                <a href="@NavigationManager.BaseUri/resources/@resource.Id"><p class="resources">@resource.Title</p></a>
             }
             </div>
         </div>
@@ -88,6 +88,8 @@
 
     private UserDetailsDTO? user;
 
+    private ResourceDTO[]? resources;
+
     protected override async Task OnParametersSetAsync()
     {
         try
@@ -95,6 +97,7 @@
              if (UserId != 0)
             {
                 user = await Http.GetFromJsonAsync<UserDetailsDTO>($"api/users/{UserId}");
+                resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/resources/{user.UserName}");
             }
 
             await base.OnParametersSetAsync();
