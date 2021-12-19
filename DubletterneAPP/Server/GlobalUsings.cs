@@ -11,5 +11,4 @@ global using Microsoft.OpenApi.Models;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Identity.Web.Resource;
-global using DubletterneAPP.Shared;
 global using System.Text.Json;
