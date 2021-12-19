@@ -11,7 +11,7 @@
 <form>
     <div class="search-field">
         <input  class="search-input" type="text" placeholder="Enter title of resource" asp-for="SearchString" />
-        <input type="submit" value="Search" />
+        <button @onclick="Search">Search</button>
     </div>
 </form>
 
@@ -96,6 +96,39 @@ else
         var uri = $"{NavigationManager.BaseUri}resources/create";
 
         NavigationManager.NavigateTo(uri);
+    }
+
+    private async void Search()
+    {
+        System.Console.WriteLine("LEEEEEROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOYYYYYYYYYYY");
+        try
+        {
+            System.Console.WriteLine("Resources.razor: line 106");
+            var r = "Resource";
+            var m = "man";
+            var results = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Search/{r}/{m}");
+            System.Console.WriteLine("Resources.razor: line 110");
+            System.Console.WriteLine(results.Count());
+            System.Console.WriteLine(results.Count());
+            System.Console.WriteLine(results.Count());
+            System.Console.WriteLine(results.Count());
+        }
+        catch (Exception exception)
+        {
+
+            Console.WriteLine(exception.Message);
+            var list = Enumerable.Range(1, 1).Select(index => new ResourceDTO
+            {
+                Id = index,
+                User = new UserDTO{
+                    Id = index,
+                    UserName = "User 1"
+                },
+                Title = "Log in to see resources"
+            })
+            .ToArray();
+            resources = list;
+        }
     }
 }
 

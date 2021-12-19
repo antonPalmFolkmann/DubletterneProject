@@ -31,7 +31,7 @@ public class SearchController : ControllerBase{
         var searchRequestForm = new SearchRequestForm(searchParameter, _searchTerm);
 
         if (!SearchValidater.ValidateSearchTermCharacters(searchRequestForm.searchTerm)) {
-                throw new ArgumentException("Search Term is not valid, contains invalid charecters.");
+                throw new ArgumentException("Search Term is not valid, contains invalid characters.");
         }
 
         var terms = searchRequestForm.searchTerm.Split(" ");
@@ -70,6 +70,6 @@ public class SearchController : ControllerBase{
         
         Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(z.MetaData));
 
-        return Ok(z);
+        return Ok(orderedList.ToArray());
     }
 }
