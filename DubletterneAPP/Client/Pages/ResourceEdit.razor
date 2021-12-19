@@ -17,6 +17,10 @@
             <InputText id="Title" @bind-Value="resource.Title" class="form-control" />
         </div>
         <div class="form-group">
+            <label for="Text">Text</label>
+            <InputTextArea @bind-Value="TextParagraphs" class="form-control" rows="5" />
+        </div>
+        <div class="form-group">
             <label for="Image URL">Image URL</label>
             <InputText id="ImageUrl" @bind-Value="resource.ImageUrl" class="form-control" />
         </div>
@@ -61,5 +65,11 @@
         var uri = $"{NavigationManager.BaseUri}resources/{ResourceId}";
 
         NavigationManager.NavigateTo(uri);
+    }
+
+    private string TextParagraphs
+    {
+        get => string.Join(Environment.NewLine, resource.TextParagraphs);
+        set => resource.TextParagraphs = value.Split(Environment.NewLine).Select(p => p.Trim()).Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
     }
 } 

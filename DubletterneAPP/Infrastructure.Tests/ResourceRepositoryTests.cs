@@ -255,10 +255,10 @@ namespace Infrastructure.Tests
              var resources = await _repository.ReadAllAsync();
 
              Assert.Collection(resources, 
-             resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!", User = new UserDTO{Id=1, UserName= "UserFuser"}}, resource),
-             resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate", User = new UserDTO{Id=2, UserName = "Animals"}}, resource),
-             resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User = new UserDTO{Id=3, UserName= "History"}}, resource),
-             resource => Assert.Equal(new ResourceDTO{Id = 4, Title = "Dune", User = new UserDTO{Id=2, UserName ="Animals"}}, resource)
+             resource => Assert.Equal(new ResourceDTO{Id = 1, Title = "Hello, world!", User = new UserDTO{Id=1, UserName= "UserFuser"}, ImageUrl="image.com"}, resource),
+             resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate", User = new UserDTO{Id=2, UserName = "Animals"}, ImageUrl="image2.com"}, resource),
+             resource => Assert.Equal(new ResourceDTO{Id = 3, Title = "StarWars", User = new UserDTO{Id=3, UserName= "History"}, ImageUrl="image3.com"}, resource),
+             resource => Assert.Equal(new ResourceDTO{Id = 4, Title = "Dune", User = new UserDTO{Id=2, UserName ="Animals"}, ImageUrl="image4.com"}, resource)
              );
         }
 
@@ -273,8 +273,8 @@ namespace Infrastructure.Tests
             var resources = await _repository.ReadAllByAuthorAsync(user.UserName);
 
             Assert.Collection(resources, 
-             resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate", User = new UserDTO{Id=2, UserName="Animals"}}, resource),
-             resource => Assert.Equal(new ResourceDTO{Id = 4, Title = "Dune", User = new UserDTO{Id=2, UserName="Animals"}}, resource)
+             resource => Assert.Equal(new ResourceDTO{Id = 2, Title = "Liberate", User = new UserDTO{Id=2, UserName="Animals"}, ImageUrl="image2.com"}, resource),
+             resource => Assert.Equal(new ResourceDTO{Id = 4, Title = "Dune", User = new UserDTO{Id=2, UserName="Animals"}, ImageUrl="image4.com"}, resource)
              );
         }
 

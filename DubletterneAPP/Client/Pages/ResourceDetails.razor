@@ -4,11 +4,17 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 
+@using System;
+@using System.IO;
+@using System.Net;
+
 
 <div style="width:100%;"> <!-- Main Div -->
     <div class="left-column" style="float:left; width:20%;"> <!-- Left Column -->
         <div class="form-group">
-            <img src="https://en.wikipedia.org/wiki/International_Klein_Blue#/media/File:IKB_191.jpg">
+            <div class="img-container">
+                <img class="resource-img" src="@resource.ImageUrl" alt=""> 
+            </div>
             <button type="button" class="btn btn-primary" @onclick="Edit">Edit</button> <br>
             <button type="button" class="btn btn-danger" @onclick="Delete">Delete</button> <br>
             <button type="button" class="btn btn-secondary" @onclick="Back">Back</button> <br>
@@ -35,23 +41,30 @@
                 }
                 </div>
             </div>
-
         }
-
     </div>
 </div>
 
 <style>
+
+    .img-container {
+        height: 300px;
+        width: 70%;
+        margin-bottom: 2em;
+    }
+
+    .img-container img {
+        display: inline-flex;
+        height: fit-content;
+        width: fit-content;
+        max-height: 100%;
+        max-width: 100%;
+    }
+
     .form-group {
         display: inline-flex;
         flex-direction: column;
         align-items: center;
-    }
-
-    .left-column img {
-        width: 150px;
-        height: 300px;
-        margin-bottom: 2em;
     }
 
     .left-column button {
@@ -59,7 +72,6 @@
         justify-content: center;
         align-items: center;
         width: 150px;
-        margin-top: 10px;
     }
 
     .right-column {

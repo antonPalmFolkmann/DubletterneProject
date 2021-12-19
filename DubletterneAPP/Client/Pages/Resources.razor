@@ -28,7 +28,7 @@ else
     <table class="table">
     <thead>
         <tr>
-            <th scope="col">Image</th>
+            <th scope="col" style="width: 150px;">Image</th>
             <th scope="col">Title</th>
             <th scope="col">User</th>
             <th scope="col">View</th>
@@ -39,7 +39,7 @@ else
         {
             <tr>
                 <td>
-                    <img src="@resource.ImageUrl" alt="resource image" style="width:70px;" />
+                    <img class="resource-img-search" src="@resource.ImageUrl" alt=""> 
                 </td>
                 <td class="align-middle">
                     @resource.Title
@@ -60,11 +60,12 @@ else
 {
     private ResourceDTO[]? resources;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         try
         {
             resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Resources");
+            await base.OnParametersSetAsync();
         }
         catch (Exception exception)
         {
@@ -100,6 +101,12 @@ else
 }
 
 <style>
+    .resource-img-search {
+        width: fit-content;
+        height: fit-content;
+        max-height: 300px;
+        max-width: 80%;
+    }
 
     .search-field {
         display: flex;
