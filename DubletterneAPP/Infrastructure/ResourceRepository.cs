@@ -67,7 +67,7 @@ namespace Infrastructure
         public async Task<IReadOnlyCollection<ResourceDTO>> ReadAllAsync()
         {
             var resources = (await _context.Resources
-                                 .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title, User = new UserDTO{Id=r.User.Id, UserName=r.User.UserName}})
+                                 .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title, User = new UserDTO{Id=r.User.Id, UserName=r.User.UserName}, ImageUrl = r.ImageUrl})
                                  .ToListAsync())
                                  .AsReadOnly();
             return resources;
@@ -76,7 +76,7 @@ namespace Infrastructure
         public async Task<IReadOnlyCollection<ResourceDTO>> ReadAllByAuthorAsync(UserDTO user)
         {
             var resources = (await _context.Resources.Where(r => r.User.Id == user.Id)
-                                                     .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title, User = new UserDTO{Id = r.User.Id, UserName = r.User.UserName}})
+                                                     .Select(r => new ResourceDTO{Id = r.Id, Title = r.Title, User = new UserDTO{Id = r.User.Id, UserName = r.User.UserName}, ImageUrl = r.ImageUrl})
                                                      .ToListAsync())
                                                      .AsReadOnly();
             return resources;
