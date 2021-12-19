@@ -30,7 +30,6 @@ else
         <tr>
             <th scope="col">Image</th>
             <th scope="col">Title</th>
-            <th scope="col">Id</th>
             <th scope="col">User</th>
             <th scope="col">View</th>
         </tr>
@@ -40,13 +39,10 @@ else
         {
             <tr>
                 <td>
-                    <img src="https://nakedsecurity.sophos.com/wp-content/uploads/sites/2/2016/03/rickastley.jpg" alt="resource image" style="width:200px;" />
+                    <img src="@resource.ImageUrl" alt="resource image" style="width:70px;" />
                 </td>
                 <td class="align-middle">
                     @resource.Title
-                </td>
-                <td class="align-middle">
-                    @resource.Id
                 </td>
                 <td class="align-middle">
                     @resource.User.UserName
@@ -72,15 +68,16 @@ else
         }
         catch (Exception exception)
         {
+
             Console.WriteLine(exception.Message);
-            var list = Enumerable.Range(1, 5).Select(index => new ResourceDTO
+            var list = Enumerable.Range(1, 1).Select(index => new ResourceDTO
             {
                 Id = index,
                 User = new UserDTO{
                     Id = index,
-                    UserName = String.Format("User number {0}", index)
+                    UserName = "User 1"
                 },
-                Title = String.Format("Title number {0}", index)
+                Title = "Log in to see resources"
             })
             .ToArray();
             resources = list;

@@ -15,16 +15,10 @@ public class UsersController : ControllerBase
         _repository = repository;
     }
 
-    [HttpGet]
-    public async Task<string> Get()
-    {
-        Console.WriteLine("I got something");
-        var list = await _repository.ReadAllAsync();
-        var array = list.ToArray();
 
-        var jsonString = JsonSerializer.Serialize(array);
-        return jsonString;
-    }
+    [HttpGet]
+    public async Task<IReadOnlyCollection<UserDTO>> Get() 
+        => await _repository.ReadAllAsync();
 
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

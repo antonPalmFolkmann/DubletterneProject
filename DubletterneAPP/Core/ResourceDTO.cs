@@ -7,6 +7,7 @@ namespace Core
         public int Id { get; set; }
         public string? Title { get; set; }
         public UserDTO User { get; set; }
+        public string? ImageUrl { get; set; }
     }
 
     public record ResourceDetailsDTO : ResourceDTO
@@ -14,7 +15,6 @@ namespace Core
         public DateTime? Created { get; set; }
         public DateTime? Updated { get; set; }
         public ICollection<string>? TextParagraphs { get; set; }
-        public string? ImageUrl { get; set; }
     }
     public record ResourceCreateDTO
     {

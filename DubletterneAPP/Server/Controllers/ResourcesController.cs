@@ -17,6 +17,7 @@ public class ResourcesController : ControllerBase
         _repository = repository;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IReadOnlyCollection<ResourceDTO>> Get() 
         => await _repository.ReadAllAsync();

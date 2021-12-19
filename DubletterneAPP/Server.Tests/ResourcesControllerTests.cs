@@ -64,7 +64,7 @@ public class ResourcesControllerTests
     }
 
     [Fact]
-    public async Task Get_given_existing_returns_character()
+    public async Task Get_given_existing_returns_resource()
     {
         // Arrange
         var logger = new Mock<ILogger<ResourcesController>>();

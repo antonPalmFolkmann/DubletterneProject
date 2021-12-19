@@ -31,24 +31,15 @@ public class SearchRequestForm
     public string searchTerm { get; set; }
 
 
-/*
-    public SearchRequestForm(SearchParam searchParam, string searchTerm){
-        this.searchParam = searchParam;
-        this.searchTerm = searchTerm;
+ public SearchRequestForm(string searchParamString, string searchTerm){
 
-        if (searchParam.Equals(SearchParam.User))
-        {
-            throw new NotImplementedException();
-            //Insert code for searching for a User
-        } else if (searchParam.Equals(SearchParam.Resource))
-        {
-            throw new NotImplementedException();
-            //Insert code for searching for a Resource
-        } else 
-        {
-            throw new NotImplementedException();
-            //Insert code for a search query with no chosen category
+        try {
+            this.searchParam = (SearchParam) Enum.Parse(typeof(SearchParam), searchParamString);
         }
-    } */
-
+        catch (ArgumentException e){
+            Console.WriteLine("Fail to parse string to enum type SearchParam", e);
+        }
+        
+        this.searchTerm = searchTerm;
+    }
 }
