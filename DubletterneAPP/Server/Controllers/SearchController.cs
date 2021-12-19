@@ -28,8 +28,18 @@ public class SearchController : ControllerBase
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(IActionResult), StatusCodes.Status200OK)]
+    [HttpGet("{searchParameter}")]
+    public async Task<IActionResult> Get(string searchParameter)
+    {
+        return await Get(searchParameter, "");
+    }
+    
+
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IActionResult), StatusCodes.Status200OK)]
     [HttpGet("{searchParameter}/{_searchTerm}")]
-    public async Task<IActionResult> Get(String searchParameter, String _searchTerm)
+    public async Task<IActionResult> Get(string searchParameter, string _searchTerm)
     {
 
         var searchRequestForm = new SearchRequestForm(searchParameter, _searchTerm);

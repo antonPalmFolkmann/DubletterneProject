@@ -10,8 +10,8 @@
 
 <form>
     <div class="search-field">
-        <input type="text" class="form-control" placeholder="Search by product name" 
-           @bind-value="@input" @bind-value:event="oninput" @onkeyup="Search" />
+        <input type="text" class="form-control" placeholder="Search by product name" @bind-value="@input"
+            @bind-value:event="oninput" @onkeyup="Search" />
     </div>
 </form>
 
@@ -36,22 +36,22 @@ else
     </thead>
     <tbody>
         @foreach (var resource in resources)
-        {
-            <tr>
-                <td>
-                    <img src="@resource.ImageUrl" alt="resource image" style="width:70px;" />
-                </td>
-                <td class="align-middle">
-                    @resource.Title
-                </td>
-                <td class="align-middle">
-                    @resource.User.UserName
-                </td>
-                <td class="align-middle">
-                    <button type="button" class="btn btn-info"  @onclick="@(() => View(resource))">View</button>
-                </td>
-            </tr>
-         }
+            {
+                <tr>
+                    <td>
+                        <img src="@resource.ImageUrl" alt="resource image" style="width:70px;" />
+                    </td>
+                    <td class="align-middle">
+                        @resource.Title
+                    </td>
+                    <td class="align-middle">
+                        @resource.User.UserName
+                    </td>
+                    <td class="align-middle">
+                        <button type="button" class="btn btn-info" @onclick="@(() => View(resource))">View</button>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 }
@@ -67,23 +67,23 @@ else
         /*
         try
         {
-            resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Resources");
+        resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Resources");
         }
         catch (Exception exception)
         {
 
-            Console.WriteLine(exception.Message);
-            var list = Enumerable.Range(1, 1).Select(index => new ResourceDTO
-            {
-                Id = index,
-                User = new UserDTO{
-                    Id = index,
-                    UserName = "User 1"
-                },
-                Title = "Log in to see resources"
-            })
-            .ToArray();
-            resources = list;
+        Console.WriteLine(exception.Message);
+        var list = Enumerable.Range(1, 1).Select(index => new ResourceDTO
+        {
+        Id = index,
+        User = new UserDTO{
+        Id = index,
+        UserName = "User 1"
+        },
+        Title = "Log in to see resources"
+        })
+        .ToArray();
+        resources = list;
         }
         */
     }
@@ -105,17 +105,21 @@ else
     private async Task Search()
     {
         System.Console.WriteLine("LEEEEEROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOYYYYYYYYYYY");
+        var r = "Resource";
         try
         {
-            if(input == null || input == " "){
-                input = "\n";
+            if (input == null || input == "")
+            {
+                resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Search/{r}");
             }
-            System.Console.WriteLine("Resources.razor: line 106");
-            var r = "Resource";
-            //var reeeeee = await Http.GetStringAsync($"api/Search/{r}/{m}");
-            //System.Console.WriteLine("Resources.razor: line 110: " + reeeeee);
-            resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Search/{r}/{input}");
-            //System.Console.WriteLine("Resources count: " + resources.Count());
+            else
+            {
+                System.Console.WriteLine("Resources.razor: line 119");
+                //var reeeeee = await Http.GetStringAsync($"api/Search/{r}/{m}");
+                //System.Console.WriteLine("Resources.razor: line 110: " + reeeeee);
+                resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Search/{r}/{input}");
+                //System.Console.WriteLine("Resources count: " + resources.Count());
+            }
         }
         catch (Exception exception)
         {
@@ -126,7 +130,6 @@ else
 }
 
 <style>
-
     .search-field {
         display: flex;
         justify-content: center;
