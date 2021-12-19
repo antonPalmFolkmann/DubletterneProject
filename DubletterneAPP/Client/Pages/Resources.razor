@@ -10,8 +10,8 @@
 
 <form>
     <div class="search-field">
-        <input  class="search-input" type="text" placeholder="Enter title of resource" asp-for="SearchString" />
-        <button @onclick="Search">Search</button>
+        <input type="text" class="form-control" placeholder="Search by product name" 
+           @bind-value="@input" @bind-value:event="oninput" @onkeyup="Search" />
     </div>
 </form>
 
@@ -59,9 +59,12 @@ else
 @code
 {
     private ResourceDTO[]? resources;
+    private string? input = "";
 
     protected override async Task OnInitializedAsync()
     {
+        await Search();
+        /*
         try
         {
             resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Resources");
@@ -82,6 +85,7 @@ else
             .ToArray();
             resources = list;
         }
+        */
     }
 
     private void View(ResourceDTO resource)
@@ -98,36 +102,25 @@ else
         NavigationManager.NavigateTo(uri);
     }
 
-    private async void Search()
+    private async Task Search()
     {
         System.Console.WriteLine("LEEEEEROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOYYYYYYYYYYY");
         try
         {
+            if(input == null || input == " "){
+                input = "\n";
+            }
             System.Console.WriteLine("Resources.razor: line 106");
             var r = "Resource";
-            var m = "man";
-            var results = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Search/{r}/{m}");
-            System.Console.WriteLine("Resources.razor: line 110");
-            System.Console.WriteLine(results.Count());
-            System.Console.WriteLine(results.Count());
-            System.Console.WriteLine(results.Count());
-            System.Console.WriteLine(results.Count());
+            //var reeeeee = await Http.GetStringAsync($"api/Search/{r}/{m}");
+            //System.Console.WriteLine("Resources.razor: line 110: " + reeeeee);
+            resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Search/{r}/{input}");
+            //System.Console.WriteLine("Resources count: " + resources.Count());
         }
         catch (Exception exception)
         {
 
             Console.WriteLine(exception.Message);
-            var list = Enumerable.Range(1, 1).Select(index => new ResourceDTO
-            {
-                Id = index,
-                User = new UserDTO{
-                    Id = index,
-                    UserName = "User 1"
-                },
-                Title = "Log in to see resources"
-            })
-            .ToArray();
-            resources = list;
         }
     }
 }

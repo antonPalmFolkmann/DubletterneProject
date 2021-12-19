@@ -1,3 +1,4 @@
+using System.Linq;
 using Newtonsoft.Json;
 namespace DubletterneAPP.Server.Controllers;
 
@@ -8,7 +9,8 @@ namespace DubletterneAPP.Server.Controllers;
 
 
 
-public class SearchController : ControllerBase{
+public class SearchController : ControllerBase
+{
 
     private readonly ILogger<SearchController> _logger;
 
@@ -16,7 +18,8 @@ public class SearchController : ControllerBase{
 
     private readonly IUserRepository _userRepository;
 
-    public SearchController(ILogger<SearchController> logger, IResourceRepository resourceRepository, IUserRepository userRepository) {
+    public SearchController(ILogger<SearchController> logger, IResourceRepository resourceRepository, IUserRepository userRepository)
+    {
         _logger = logger;
         _resourceRepository = resourceRepository;
         _userRepository = userRepository;
@@ -26,49 +29,91 @@ public class SearchController : ControllerBase{
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(IActionResult), StatusCodes.Status200OK)]
     [HttpGet("{searchParameter}/{_searchTerm}")]
-    public async Task<IActionResult> Get(String searchParameter, String _searchTerm){
+    public async Task<IActionResult> Get(String searchParameter, String _searchTerm)
+    {
 
         var searchRequestForm = new SearchRequestForm(searchParameter, _searchTerm);
 
-        if (!SearchValidater.ValidateSearchTermCharacters(searchRequestForm.searchTerm)) {
-                throw new ArgumentException("Search Term is not valid, contains invalid characters.");
+        if (!SearchValidater.ValidateSearchTermCharacters(searchRequestForm.searchTerm))
+        {
+            throw new ArgumentException("Search Term is not valid, contains invalid characters.");
         }
 
         var terms = searchRequestForm.searchTerm.Split(" ");
-        var matchesWithScore = new Dictionary<ISearchAble, int>();
+
+        if (searchRequestForm.searchParam == SearchParam.User)
+        {
+            return await getUserMatches(terms);
+        }
+        else
+        {
+            return await getResourceMatches(terms);
+        }
+
+        
+        //var z = PagedList<ISearchAble>.ToPagedList(orderedList, searchRequestForm.PageNumber, searchRequestForm.PageSize);
+        //Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(z.MetaData));
+        //return Ok(orderedList.ToArray());
+    }
+
+    private async Task<IActionResult> getResourceMatches(string[] terms)
+    {
+        var matchesWithScore = new Dictionary<ResourceDTO, int>();
 
         foreach (string s in terms)
+        {
+            var matches = new List<ResourceDTO>();
+            var n = await _resourceRepository.Search(s);
+            matches = n.ToList<ResourceDTO>();
+            var i = SearchScorer.ScoreMatch(s);
+
+            foreach (var match in matches)
             {
-                var matches = new List<ISearchAble>();
-
-                switch (searchRequestForm.searchParam){
-                    case SearchParam.User:
-                        var n = await _userRepository.Search(s);
-                        matches = n.ToList<ISearchAble>();
-                        break;
-                    case SearchParam.Category:
-                        break;
-                    case SearchParam.Resource:
-                        var m = await _resourceRepository.Search(s);
-                        matches = m.ToList<ISearchAble>();
-                        break;
+                if (matchesWithScore.ContainsKey(match))
+                {
+                    matchesWithScore[match] += i;
                 }
-
-                var i = SearchScorer.ScoreMatch(s);
-
-                foreach(ISearchAble isa in matches){
-                    if (matchesWithScore.ContainsKey(isa)){
-                        matchesWithScore[isa] += i;
-                    } else {
-                        matchesWithScore.Add(isa, i);
-                    }
+                else
+                {
+                    matchesWithScore.Add(match, i);
                 }
             }
+        }
 
         var orderedList = MatchSorter.SortMatchesKeysHighestScoreFirst(matchesWithScore);
-        var z = PagedList<ISearchAble>.ToPagedList(orderedList, searchRequestForm.PageNumber, searchRequestForm.PageSize);
-        
-        Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(z.MetaData));
+        foreach (var item in orderedList)
+        {
+            System.Console.WriteLine(item);
+        }
+
+        return Ok(orderedList.ToArray());
+    }
+
+    private async Task<IActionResult> getUserMatches(string[] terms)
+    {
+        var matchesWithScore = new Dictionary<UserDTO, int>();
+
+        foreach (string s in terms)
+        {
+            var matches = new List<UserDTO>();
+            var n = await _userRepository.Search(s);
+            matches = n.ToList<UserDTO>();
+            var i = SearchScorer.ScoreMatch(s);
+
+            foreach (var match in matches)
+            {
+                if (matchesWithScore.ContainsKey(match))
+                {
+                    matchesWithScore[match] += i;
+                }
+                else
+                {
+                    matchesWithScore.Add(match, i);
+                }
+            }
+        }
+
+        var orderedList = MatchSorter.SortMatchesKeysHighestScoreFirst(matchesWithScore);
 
         return Ok(orderedList.ToArray());
     }
