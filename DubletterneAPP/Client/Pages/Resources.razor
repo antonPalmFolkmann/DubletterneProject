@@ -10,7 +10,7 @@
 
 <form>
     <div class="search-field">
-        <input type="text" class="form-control" placeholder="Search by product name" @bind-value="@input"
+        <input type="text" class="form-control" placeholder="Search by title" @bind-value="@input"
             @bind-value:event="oninput" @onkeyup="Search" />
     </div>
 </form>
@@ -64,28 +64,6 @@ else
     protected override async Task OnInitializedAsync()
     {
         await Search();
-        /*
-        try
-        {
-        resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Resources");
-        }
-        catch (Exception exception)
-        {
-
-        Console.WriteLine(exception.Message);
-        var list = Enumerable.Range(1, 1).Select(index => new ResourceDTO
-        {
-        Id = index,
-        User = new UserDTO{
-        Id = index,
-        UserName = "User 1"
-        },
-        Title = "Log in to see resources"
-        })
-        .ToArray();
-        resources = list;
-        }
-        */
     }
 
     private void View(ResourceDTO resource)
@@ -104,27 +82,15 @@ else
 
     private async Task Search()
     {
-        System.Console.WriteLine("LEEEEEROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOYYYYYYYYYYY");
-        var r = "Resource";
-        try
+        var parameter = "Resource";
+        if (input == null || input == "")
         {
-            if (input == null || input == "")
-            {
-                resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Search/{r}");
-            }
-            else
-            {
-                System.Console.WriteLine("Resources.razor: line 119");
-                //var reeeeee = await Http.GetStringAsync($"api/Search/{r}/{m}");
-                //System.Console.WriteLine("Resources.razor: line 110: " + reeeeee);
-                resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Search/{r}/{input}");
-                //System.Console.WriteLine("Resources count: " + resources.Count());
-            }
+            resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Search/{parameter}");
         }
-        catch (Exception exception)
+        else
         {
-
-            Console.WriteLine(exception.Message);
+            System.Console.WriteLine("Resources.razor: line 119");
+            resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Search/{parameter}/{input}");
         }
     }
 }
