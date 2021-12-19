@@ -10,8 +10,8 @@
 
 <form>
     <div class="search-field">
-        <input  class="search-input" type="text" placeholder="Enter title of resource" asp-for="SearchString" />
-        <input type="submit" value="Search" />
+        <input type="text" class="form-control" placeholder="Search by user" @bind-value="@input"
+            @bind-value:event="oninput" @onkeyup="Search" />
     </div>
 </form>
 
@@ -22,14 +22,14 @@
 else
 {
     <table class="table">
-        <thead>
-            <tr>
-                <th>UserName</th>
-                <th>View</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in users)
+    <thead>
+        <tr>
+            <th>UserName</th>
+            <th>View</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in users)
             {
                 <tr>
                     <td>@user.UserName</td>
@@ -43,24 +43,11 @@ else
 @code
 {
     private UserDTO[]? users;
+    private string? input = "";
 
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            users = await Http.GetFromJsonAsync<UserDTO[]>($"api/Users");
-        }
-        catch (Exception exception)
-        {
-            Console.WriteLine(exception.Message);
-            var list = Enumerable.Range(1, 1).Select(index => new UserDTO
-            {
-                Id = index,
-                UserName = "Login to see more",
-            })
-            .ToArray();
-            users = list;
-        }
+        await Search();
     }
 
     private void View(UserDTO user)
@@ -69,10 +56,22 @@ else
 
         NavigationManager.NavigateTo(uri);
     }
+
+    private async Task Search()
+    {
+        var parameter = "User";
+        if (input == null || input == "")
+        {
+            users = await Http.GetFromJsonAsync<UserDTO[]>($"api/Search/{parameter}");
+        }
+        else
+        {
+            users = await Http.GetFromJsonAsync<UserDTO[]>($"api/Search/{parameter}/{input}");
+        }
+    }
 }
 
 <style>
-
     .search-field {
         display: flex;
         justify-content: center;
@@ -97,6 +96,4 @@ else
         margin-left: auto;
         margin-right: auto;
     }
-
-
 </style>

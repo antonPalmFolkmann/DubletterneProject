@@ -10,8 +10,8 @@
 
 <form>
     <div class="search-field">
-        <input  class="search-input" type="text" placeholder="Enter title of resource" asp-for="SearchString" />
-        <input type="submit" value="Search" />
+        <input type="text" class="form-control" placeholder="Search by title" @bind-value="@input"
+            @bind-value:event="oninput" @onkeyup="Search" />
     </div>
 </form>
 
@@ -59,30 +59,11 @@ else
 @code
 {
     private ResourceDTO[]? resources;
+    private string? input = "";
 
     protected override async Task OnParametersSetAsync()
     {
-        try
-        {
-            resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Resources");
-            await base.OnParametersSetAsync();
-        }
-        catch (Exception exception)
-        {
-
-            Console.WriteLine(exception.Message);
-            var list = Enumerable.Range(1, 1).Select(index => new ResourceDTO
-            {
-                Id = index,
-                User = new UserDTO{
-                    Id = index,
-                    UserName = "User 1"
-                },
-                Title = "Log in to see resources"
-            })
-            .ToArray();
-            resources = list;
-        }
+        await Search();
     }
 
     private void View(ResourceDTO resource)
@@ -98,9 +79,24 @@ else
 
         NavigationManager.NavigateTo(uri);
     }
+
+    private async Task Search()
+    {
+        var parameter = "Resource";
+        if (input == null || input == "")
+        {
+            resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Search/{parameter}");
+        }
+        else
+        {
+            System.Console.WriteLine("Resources.razor: line 119");
+            resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Search/{parameter}/{input}");
+        }
+    }
 }
 
 <style>
+
     .resource-img-search {
         width: fit-content;
         height: fit-content;
