@@ -28,7 +28,7 @@ else
     <table class="table">
     <thead>
         <tr>
-            <th scope="col">Image</th>
+            <th scope="col" style="width: 150px;">Image</th>
             <th scope="col">Title</th>
             <th scope="col">User</th>
             <th scope="col">View</th>
@@ -36,22 +36,22 @@ else
     </thead>
     <tbody>
         @foreach (var resource in resources)
-            {
-                <tr>
-                    <td>
-                        <img src="@resource.ImageUrl" alt="resource image" style="width:70px;" />
-                    </td>
-                    <td class="align-middle">
-                        @resource.Title
-                    </td>
-                    <td class="align-middle">
-                        @resource.User.UserName
-                    </td>
-                    <td class="align-middle">
-                        <button type="button" class="btn btn-info" @onclick="@(() => View(resource))">View</button>
-                    </td>
-                </tr>
-            }
+        {
+            <tr>
+                <td>
+                    <img class="resource-img-search" src="@resource.ImageUrl" alt=""> 
+                </td>
+                <td class="align-middle">
+                    @resource.Title
+                </td>
+                <td class="align-middle">
+                    @resource.User.UserName
+                </td>
+                <td class="align-middle">
+                    <button type="button" class="btn btn-info"  @onclick="@(() => View(resource))">View</button>
+                </td>
+            </tr>
+         }
         </tbody>
     </table>
 }
@@ -61,7 +61,7 @@ else
     private ResourceDTO[]? resources;
     private string? input = "";
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         await Search();
     }
@@ -96,6 +96,14 @@ else
 }
 
 <style>
+
+    .resource-img-search {
+        width: fit-content;
+        height: fit-content;
+        max-height: 300px;
+        max-width: 80%;
+    }
+
     .search-field {
         display: flex;
         justify-content: center;
