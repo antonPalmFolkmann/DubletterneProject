@@ -9,7 +9,7 @@
 
 <hr />
 
-<EditForm Model="@resource" OnSubmit="@HandleSubmit">
+<EditForm Model="@resource" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="form-group">
@@ -33,9 +33,8 @@
 </EditForm>
 
 @code {
-    [Parameter]
-    public ClaimsPrincipal User {get; set;}
     private ResourceCreateDTO resource = new();
+    private EditContext editContext;
 
     protected override async Task OnInitializedAsync()
     {
@@ -45,6 +44,7 @@
         var strings = username.Split("@");
         var user = await Http.GetFromJsonAsync<UserDetailsDTO>($"api/users/{strings[0]}");
         resource.User = new UserDTO{Id = user.Id, UserName = user.UserName};
+        resource.Created = DateTime.Today;
     }
 
     private string TextParagraphs
@@ -53,30 +53,14 @@
         set => resource.TextParagraphs = value.Split(Environment.NewLine).Select(p => p.Trim()).Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
     }
 
-    private async Task HandleSubmit(){
-        resource.Created = DateTime.Today;
-        var editContext = new EditContext(resource);
-
-        if (editContext != null && editContext.Validate()){
-            await CreateNewResource();
-            await Task.CompletedTask;
-        }
-
-    }
-
-    private async Task CreateNewResource()
+    private async Task HandleValidSubmit()
     {
         var response = await Http.PostAsJsonAsync("api/Resources", resource);
 
         if (response.IsSuccessStatusCode)
         {
-            Console.WriteLine("i succeded");
             var created = await response.Content.ReadFromJsonAsync<int>();
-            
-            Console.WriteLine("created: " + created);
-
             var uri = $"{NavigationManager.BaseUri}resources/{created}";
-
             NavigationManager.NavigateTo(uri);
         }
     }

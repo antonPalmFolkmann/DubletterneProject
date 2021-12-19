@@ -8,7 +8,7 @@
 <div style="width:100%;"> <!-- Main Div -->
     <div class="left-column" style="float:left; width:20%;"> <!-- Left Column -->
         <div class="form-group">
-            <img src="https://nakedsecurity.sophos.com/wp-content/uploads/sites/2/2016/03/rickastley.jpg" alt="resource image" style="width:200px;" />
+            <img src="https://en.wikipedia.org/wiki/International_Klein_Blue#/media/File:IKB_191.jpg">
             <button type="button" class="btn btn-primary" @onclick="Edit">Edit</button> <br>
             <button type="button" class="btn btn-danger" @onclick="Delete">Delete</button> <br>
             <button type="button" class="btn btn-secondary" @onclick="Back">Back</button> <br>
@@ -21,9 +21,9 @@
             <hr> 
             <div class="resource-info">
                 <p>
-                    Created by user: @resource.User, at @resource.Created <br>
+                    Created by user: @resource.User.UserName, at @resource.Created <br>
                     Last updated: @resource.Updated
-                </p> 
+                </p>
             </div>
             
             <div class="resource-content-container" >

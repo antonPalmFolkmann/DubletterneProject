@@ -22,8 +22,13 @@ public class SearchController : ControllerBase{
         _userRepository = userRepository;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Get([FromQuery] SearchRequestForm searchRequestForm){
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(IActionResult), StatusCodes.Status200OK)]
+    [HttpGet("{searchParameter}/{_searchTerm}")]
+    public async Task<IActionResult> Get(String searchParameter, String _searchTerm){
+
+        var searchRequestForm = new SearchRequestForm(searchParameter, _searchTerm);
 
         if (!SearchValidater.ValidateSearchTermCharacters(searchRequestForm.searchTerm)) {
                 throw new ArgumentException("Search Term is not valid, contains invalid charecters.");
@@ -67,5 +72,4 @@ public class SearchController : ControllerBase{
 
         return Ok(z);
     }
-
 }
