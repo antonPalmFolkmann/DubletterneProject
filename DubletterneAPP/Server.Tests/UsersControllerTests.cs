@@ -3,6 +3,35 @@ namespace Server.Tests.Controllers;
 public class UsersControllerTests {
 
     [Fact]
+    public async Task Create_creates_User()
+    {
+        // Arrange
+        var logger = new Mock<ILogger<UsersController>>();
+        var toCreate = new UserCreateDTO();
+        var created = new UserDetailsDTO{
+            Id = 1,
+            FirstName = "Harry",
+            LastName = "Potter",
+            UserName = "hapt",
+            Created = DateTime.Today,
+            Updated = null,
+            Email = "hapt@itu.dk",
+            Resources = new List<string>{"I am", "Harry Potter"}};
+        var repository = new Mock<IUserRepository>();
+        repository.Setup(m => m.CreateAsync(toCreate)).ReturnsAsync((Response.Created, created.Id));
+        var controller = new UsersController(logger.Object, repository.Object);
+
+        // Act
+        var result = await controller.Post(toCreate) as CreatedAtActionResult;
+        var resultvalue = result.Value;
+
+        var expected = (Response.Created,created.Id);
+        // Assert
+        Assert.Equal(expected.Id, resultvalue);
+        Assert.Equal("Get", result?.ActionName);
+    }
+    
+    [Fact]
     public async Task Get_returns_Users_from_repo()
     {
         // Given
