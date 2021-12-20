@@ -49,7 +49,7 @@ public class UsersControllerTests {
     }
 
     [Fact]
-    public async Task Get_given_existing_returns_user()
+    public async Task Get_given_existing_id_returns_user()
     {
         // Arrange
         var logger = new Mock<ILogger<UsersController>>();
@@ -66,6 +66,29 @@ public class UsersControllerTests {
 
         // Act
         var response = await controller.Get(1);
+
+        // Assert
+        Assert.Equal(user, response.Value);
+    }
+
+    [Fact]
+    public async Task Get_given_existing_username_returns_user()
+    {
+        // Arrange
+        var logger = new Mock<ILogger<UsersController>>();
+        var repository = new Mock<IUserRepository>();
+        var user = new UserDetailsDTO{
+            Id = 1,
+            FirstName = "Harry",
+            LastName = "Potter",
+            UserName = "TBWL",
+            Created = new DateTime(2021,12,08),
+            Email = "TBWL@diagonal.com"};
+        repository.Setup(m => m.ReadAsyncByUsername("TBWL")).ReturnsAsync(user);
+        var controller = new UsersController(logger.Object, repository.Object);
+
+        // Act
+        var response = await controller.Get("TBWL");
 
         // Assert
         Assert.Equal(user, response.Value);
