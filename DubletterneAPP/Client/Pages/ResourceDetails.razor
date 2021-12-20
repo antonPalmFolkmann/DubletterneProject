@@ -3,6 +3,7 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
+@inject IModalService Modal
 
 @using System;
 @using System.IO;
@@ -144,6 +145,7 @@
 
     private async Task Delete()
     {
+        var title = resource.Title;
         if (await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete the resource?"))
         {
             await Http.DeleteAsync($"api/Resources/{ResourceId}");
@@ -152,6 +154,16 @@
 
             NavigationManager.NavigateTo(uri);
         }
+        ShowDeletePopup(title, DateTime.Now);
+    }
+
+    void ShowDeletePopup(string title, DateTime deleteTime)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(DeletePopup.ResourceTitle), title);
+        parameters.Add(nameof(DeletePopup.DeleteTime), deleteTime);
+
+        Modal.Show<DeletePopup>("Resource Deleted", parameters);
     }
 
     private void Back()

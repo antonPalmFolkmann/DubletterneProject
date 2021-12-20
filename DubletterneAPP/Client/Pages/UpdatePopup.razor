@@ -1,0 +1,77 @@
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<div style="wwidth:100%">
+        @if (TitleChanged)
+        {
+            <div class="left-column" style="float:left; width:50%;">
+                <p class="paragraphs-info">Old title:</p><p>@OldTitle</p>
+            </div>
+            <div class="right-column">
+                <p class="paragraphs-info">New title:</p><p>@resource.Title</p>
+            </div>
+        }
+        @if (DescriptionChanged)
+        {
+            <div class="left-column" style="float:left; width:50%;">
+                <p class="paragraphs-info">Old Description:</p><p>@OldParagraphs</p>
+            </div>
+            <div class="right-column">
+                <p class="paragraphs-info">New Description:</p>
+                <div class="resource-content"> 
+                @foreach (var paragraph in resource.TextParagraphs)
+                {
+                    <p class="paragraphs">@paragraph</p>
+                }
+                </div>
+            </div>
+        }
+        @if (ImageUrlChanged)
+        {
+            <div class="left-column" style="float:left; width:50%;">
+                <p class="paragraphs-info">Old ImageUrl:</p><p>@OldImageUrl</p>
+            </div>
+            <div class="right-column">
+                <p class="paragraphs-info">New ImageUrl:</p><p>@resource.ImageUrl</p>
+            </div>
+        }
+</div>
+
+<style>
+    .right-column {
+        float:left;
+        width:50%;
+        margin-left;10px
+        padding-right: 3%;
+    }
+.paragraphs-info {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+</style>
+@code
+{
+
+    [Parameter] 
+    public int ResourceId {get; set;}
+    [Parameter]
+    public bool TitleChanged {get; set;}
+    [Parameter]
+    public bool DescriptionChanged {get; set;}
+    [Parameter]
+    public bool ImageUrlChanged {get; set;}
+    [Parameter]
+    public string OldTitle {get; set;}
+    [Parameter]
+    public string OldParagraphs {get; set;}
+    [Parameter]
+    public string OldImageUrl {get; set;}
+
+    ResourceDetailsDTO resource;
+
+    protected override async Task OnInitializedAsync()
+    {
+        resource = await Http.GetFromJsonAsync<ResourceDetailsDTO>($"api/resources/{ResourceId}");
+    }
+
+}
