@@ -18,6 +18,7 @@ public class SearchRequestForm
             this.searchParam = (SearchParam) Enum.Parse(typeof(SearchParam), searchParam);
         }
         catch (ArgumentException e){
+            //This will most likely never happen since all calls to the constructor are in some way hard coded. 
             this.searchParam = SearchParam.Exception;
             Console.WriteLine("Failed to parse string to enum type SearchParam", e);
         }

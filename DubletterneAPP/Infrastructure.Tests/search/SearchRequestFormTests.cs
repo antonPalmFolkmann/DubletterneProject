@@ -1,13 +1,16 @@
 namespace Infrastructure.Tests.Search;
 
     public class SearchRequestFormTests : IDisposable{
+
+        //This will most likely never happen since all calls to the constructor are in some way hard coded. 
         [Fact]
         public void SearchRequestForm_given_non_existing_parameter_returns_exception()
         {
             // Arrange
             var srf = new SearchRequestForm("Foo", "Bar");
+            
             // Act
-            var expected_searchParam = SearchParam.Exeption;
+            var expected_searchParam = SearchParam.Exception;
 
             // Assert
             Assert.Equal(expected_searchParam, srf.searchParam);
