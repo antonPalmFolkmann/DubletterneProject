@@ -43,7 +43,7 @@ public class SearchController : ControllerBase
         var searchRequestForm = new SearchRequestForm(searchParameter, _searchTerm);
 
         if (!SearchValidater.ValidateSearchTermCharacters(searchRequestForm.searchTerm)) 
-            throw new ArgumentException("Search Term is not valid, contains invalid characters.");
+            return NotFound();
 
         var terms = searchRequestForm.searchTerm.Split(" ");
 
