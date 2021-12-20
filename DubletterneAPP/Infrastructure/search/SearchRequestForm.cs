@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Infrastructure.Search;
 
-public enum SearchParam{User, Resource, Category}
+public enum SearchParam{User, Resource}
 public class SearchRequestForm
 {
     public SearchParam searchParam {get; init;}
@@ -12,13 +12,13 @@ public class SearchRequestForm
     public string searchTerm { get; set; }
 
 
- public SearchRequestForm(string searchParamString, string searchTerm){
+ public SearchRequestForm(string searchParam, string searchTerm){
 
         try {
-            this.searchParam = (SearchParam) Enum.Parse(typeof(SearchParam), searchParamString);
+            this.searchParam = (SearchParam) Enum.Parse(typeof(SearchParam), searchParam);
         }
         catch (ArgumentException e){
-            Console.WriteLine("Fail to parse string to enum type SearchParam", e);
+            Console.WriteLine("Failed to parse string to enum type SearchParam", e);
         }
         this.searchTerm = searchTerm;
     }
