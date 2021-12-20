@@ -6,7 +6,7 @@ namespace Server.Tests.Controllers;
 public class SearchControllerTests
 {
     [Fact]
-    public async Task Get_Matching_Users_From_Search_Parameter()
+    public async Task Get_Matching_Users_From_Search_Parameter_return_Multible_matches_ranked()
     {
         // Arrange
         var logger = new Mock<ILogger<SearchController>>();
@@ -38,7 +38,7 @@ public class SearchControllerTests
     }
     
     [Fact]
-    public async Task Get_Matching_Resources_From_Search_Parameter()
+    public async Task Get_Matching_Resources_With_empty_parameter_Returns_Every_Resource_Not_Ranked()
     {
         // Arrange
         var logger = new Mock<ILogger<SearchController>>();
@@ -64,6 +64,21 @@ public class SearchControllerTests
         Assert.Equal(200, result.StatusCode);
         Assert.IsType<ResourceDTO[]>(result.Value);
         Assert.Equal(expected, result.Value);
+    }
+
+    [Fact]
+    public async Task search_With_Invalid_Input_Returns_Not_found(){
+        //Arrange
+        var logger = new Mock<ILogger<SearchController>>();
+        var resourceRepository = new Mock<IResourceRepository>();
+        var userRepository = new Mock<IUserRepository>();
+        var controller = new SearchController(logger.Object, resourceRepository.Object, userRepository.Object);
+
+        //Act
+        var result = await controller.Get("Resource", "¤");
+        
+        //Assert
+        Assert.IsType<NotFoundResult>(result);
     }
 }
 
