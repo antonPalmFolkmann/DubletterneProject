@@ -2,9 +2,11 @@
 @using Core
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using System.Net
 @attribute [Authorize]
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject IModalService Modal
 
 <PageTitle>Resources</PageTitle>
 
@@ -61,6 +63,8 @@ else
     private ResourceDTO[]? resources;
     private string? input = "";
 
+    private IlligalInputPopUpTimer timer = new IlligalInputPopUpTimer();
+
     protected override async Task OnParametersSetAsync()
     {
         await Search();
@@ -83,14 +87,26 @@ else
     private async Task Search()
     {
         var parameter = "Resource";
-        if (input == null || input == "")
-        {
-            resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Search/{parameter}");
+        try{
+            if (input == null || input == "")
+            {
+                resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Search/{parameter}");
+            }
+            else
+            {
+                resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Search/{parameter}/{input}");
+            }
+        } catch (HttpRequestException x) {
+            if(x.StatusCode == HttpStatusCode.NotFound && timer.popUpProvoked(DateTime.Now)) {
+               showIllegalPopup();
+            }
         }
-        else
-        {
-            resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Search/{parameter}/{input}");
-        }
+    }
+
+    public void showIllegalPopup(){
+        var parameter = new ModalParameters();
+        parameter.Add(nameof(IllegalInputPopUp.IllegalText), input);
+        Modal.Show<IllegalInputPopUp>("Illigal Search Term", parameter);
     }
 }
 

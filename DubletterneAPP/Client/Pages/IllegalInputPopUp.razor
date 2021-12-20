@@ -1,0 +1,25 @@
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<div >
+
+    <div>
+        <p>Something</p>
+        <p class="paragraphs-info">IllegalInput:</p><p>@IllegalText</p>
+    </div>
+
+</div>
+
+<style>
+.paragraphs-info {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+</style>
+@code
+{
+
+    [Parameter] 
+    public string IllegalText {get; set;}
+
+}
