@@ -145,16 +145,20 @@
 
     private async Task Delete()
     {
+        var showPopup = false;
         var title = resource.Title;
         if (await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete the resource?"))
         {
             await Http.DeleteAsync($"api/Resources/{ResourceId}");
+            showPopup = true;
 
             var uri = $"{NavigationManager.BaseUri}resources";
 
             NavigationManager.NavigateTo(uri);
         }
-        ShowDeletePopup(title, DateTime.Now);
+
+        if(showPopup)
+            ShowDeletePopup(title, DateTime.Now);
     }
 
     void ShowDeletePopup(string title, DateTime deleteTime)
