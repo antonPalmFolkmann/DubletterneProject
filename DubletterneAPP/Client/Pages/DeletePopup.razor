@@ -1,0 +1,31 @@
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<div >
+
+    <div>
+        <p class="paragraphs-info">Title:</p><p>@ResourceTitle</p>
+    </div>
+
+    <div>
+        <p class="paragraphs-info">Deleted at:</p><p>@DeleteTime</p>
+    </div>
+
+</div>
+
+<style>
+.paragraphs-info {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+</style>
+@code
+{
+
+    [Parameter] 
+    public string ResourceTitle {get; set;}
+
+    [Parameter]
+    public DateTime DeleteTime {get; set;}
+
+}

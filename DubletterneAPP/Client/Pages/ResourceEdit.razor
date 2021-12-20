@@ -2,6 +2,7 @@
 @attribute [Authorize]
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject IModalService Modal
 
 <h1>Edit Resource</h1>
 
@@ -14,15 +15,15 @@
         <ValidationSummary />
         <div class="form-group">
             <label for="Title">Title</label>
-            <InputText id="Title" @bind-Value="resource.Title" class="form-control" />
+            <InputText id="Title" @bind-Value="resource.Title" class="form-control" @onkeyup="@(() => @titleChanged = true)" />
         </div>
         <div class="form-group">
             <label for="Text">Text</label>
-            <InputTextArea @bind-Value="TextParagraphs" class="form-control" rows="5" />
+            <InputTextArea @bind-Value="TextParagraphs" @ref="descInput" class="form-control" rows="5" @onkeyup="@(() => @descChanged = true)" />
         </div>
         <div class="form-group">
             <label for="Image URL">Image URL</label>
-            <InputText id="ImageUrl" @bind-Value="resource.ImageUrl" class="form-control" />
+            <InputText id="ImageUrl" @bind-Value="resource.ImageUrl" class="form-control" @onkeyup="@(() => @imgUrlChanged = true)" />
         </div>
         <div class="form-group">
             <br />
@@ -38,26 +39,72 @@
     [Parameter]
     public int ResourceId { get; set; }
 
+    private bool titleChanged;
+    private bool descChanged;
+    private bool imgUrlChanged;
+
+    private string oldTitle;
+    private string oldTextParagraph;
+    private string oldImageUrl;
+
+    private string TextParagraphs
+    {
+        get => string.Join(Environment.NewLine, resource.TextParagraphs);
+        set => resource.TextParagraphs = value.Split(Environment.NewLine).Select(p => p.Trim()).Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
+    }
+
+    private InputTextArea descInput = new InputTextArea();
+
     protected override async Task OnParametersSetAsync()
     {
+        titleChanged = false;
+        descChanged = false;
+        imgUrlChanged = false;
         if (ResourceId != 0)
         {
             resource = await Http.GetFromJsonAsync<ResourceUpdateDTO>($"api/Resources/{ResourceId}") ?? new();
+            System.Console.WriteLine(descInput.ValueExpression);
+            oldTitle = resource.Title;
+            oldImageUrl = resource.ImageUrl;
+            oldTextParagraph = TextParagraphs;
         }
 
         await base.OnParametersSetAsync();
     }
 
+    void UpdateDescription()
+    {
+        System.Console.WriteLine("Input value: " + descInput.Value );
+        System.Console.WriteLine("Description: " + TextParagraphs);
+        descChanged = true;
+    }
+
     private async Task HandleValidSubmit()
     {
+        
         var response = await Http.PutAsJsonAsync($"api/Resources/{ResourceId}", resource);
 
         if (response.IsSuccessStatusCode)
         {
             var uri = $"{NavigationManager.BaseUri}resources/{ResourceId}";
-
+            ShowEditPopup(ResourceId);
             NavigationManager.NavigateTo(uri);
         }
+    }
+
+    private void ShowEditPopup(int id)
+    {
+        
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(UpdatePopup.ResourceId), id);
+        parameters.Add(nameof(UpdatePopup.OldTitle), oldTitle);
+        parameters.Add(nameof(UpdatePopup.OldImageUrl), oldImageUrl);
+        parameters.Add(nameof(UpdatePopup.OldParagraphs), oldTextParagraph);
+        parameters.Add(nameof(UpdatePopup.TitleChanged), titleChanged);
+        parameters.Add(nameof(UpdatePopup.DescriptionChanged), descChanged);
+        parameters.Add(nameof(UpdatePopup.ImageUrlChanged), imgUrlChanged);
+
+        Modal.Show<UpdatePopup>("Resource Updated", parameters);
     }
 
     private void Cancel()
@@ -65,11 +112,5 @@
         var uri = $"{NavigationManager.BaseUri}resources/{ResourceId}";
 
         NavigationManager.NavigateTo(uri);
-    }
-
-    private string TextParagraphs
-    {
-        get => string.Join(Environment.NewLine, resource.TextParagraphs);
-        set => resource.TextParagraphs = value.Split(Environment.NewLine).Select(p => p.Trim()).Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
     }
 } 

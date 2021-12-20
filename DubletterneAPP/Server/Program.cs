@@ -1,7 +1,9 @@
 using Server.Model;
+using Blazored.Modal;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddBlazoredModal();
 // Add services to the container.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
@@ -19,6 +21,8 @@ builder.Services.AddDbContext<LearningContext>(options =>
 builder.Services.AddScoped<ILearningContext, LearningContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IResourceRepository, ResourceRepository>();
+
+
 
 builder.Services.AddRazorPages();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

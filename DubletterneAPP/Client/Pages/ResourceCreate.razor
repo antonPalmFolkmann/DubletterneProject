@@ -4,6 +4,7 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider authStateProvider
+@inject IModalService Modal
 
 <h1>Create Resource</h1>
 
@@ -44,7 +45,7 @@
         var strings = username.Split("@");
         var user = await Http.GetFromJsonAsync<UserDetailsDTO>($"api/users/{strings[0]}");
         resource.User = new UserDTO{Id = user.Id, UserName = user.UserName};
-        resource.Created = DateTime.Today;
+        resource.Created = DateTime.Now;
     }
 
     private string TextParagraphs
@@ -60,9 +61,18 @@
         if (response.IsSuccessStatusCode)
         {
             var created = await response.Content.ReadFromJsonAsync<int>();
+            ShowCreatePopup(created);
             var uri = $"{NavigationManager.BaseUri}resources/{created}";
             NavigationManager.NavigateTo(uri);
         }
+    }
+
+    private void ShowCreatePopup(int id)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(CreatePopup.ResourceId), id);
+
+        Modal.Show<CreatePopup>("Resource Created", parameters);
     }
 
     private void Cancel()

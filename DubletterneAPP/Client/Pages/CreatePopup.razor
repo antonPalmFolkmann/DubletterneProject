@@ -1,0 +1,47 @@
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<div >
+
+    <div>
+        <p class="paragraphs-info">Title:</p>
+        <p>@resource.Title</p>
+    </div>
+
+    <div>
+        <p class="paragraphs-info">Created at:</p>
+        <p>@resource.Created</p>
+    </div>
+
+    <div>
+        <p class="paragraphs-info">User:</p>
+        <p>@resource.User.UserName</p>
+    </div>
+
+    <div class="resource-content-container" >
+                <p class="paragraphs-info"> Description:</p> 
+                <div class="resource-content"> 
+                @foreach (var paragraph in resource.TextParagraphs)
+                {
+                    <p class="paragraphs">@paragraph</p>
+                }
+                </div>
+            </div>
+
+</div>
+
+@code
+{
+
+    [Parameter] 
+    public int ResourceId {get; set;}
+
+    ResourceDetailsDTO resource;
+
+    protected override async Task OnInitializedAsync()
+    {
+        resource = await Http.GetFromJsonAsync<ResourceDetailsDTO>($"api/resources/{ResourceId}");
+
+        await base.OnInitializedAsync();
+    }
+}
