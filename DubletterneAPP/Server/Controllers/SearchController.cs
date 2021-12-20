@@ -62,7 +62,7 @@ public class SearchController : ControllerBase
 
             matches = typeof(T) == typeof(UserDTO) ? 
                 matches = (await _userRepository.Search(s)).Cast<T>() : 
-                matches = (await _userRepository.Search(s)).Cast<T>();
+                matches = (await _resourceRepository.Search(s)).Cast<T>();
 
             var i = SearchScorer.ScoreMatch(s);
 
