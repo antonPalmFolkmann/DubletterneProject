@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 namespace Infrastructure.Tests.Search;
 
     public class SearchRequestFormTests : IDisposable{
