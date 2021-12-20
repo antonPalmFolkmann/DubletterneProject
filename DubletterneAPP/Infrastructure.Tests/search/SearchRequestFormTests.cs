@@ -5,14 +5,13 @@ namespace Infrastructure.Tests.Search;
         public void SearchRequestForm_given_non_existing_parameter_returns_exception()
         {
             // Arrange
-            var stringWriter = new StringWriter();
-            Console.SetOut(stringWriter);
-
+            var srf = new SearchRequestForm("Foo", "Bar");
             // Act
-            new SearchRequestForm("Foo", "Bar");
+            var expected_searchParam = SearchParam.Exeption;
 
             // Assert
-            Assert.Equal("Failed to parse string to enum type SearchParam\r\n", stringWriter.ToString());
+            Assert.Equal(expected_searchParam, srf.searchParam);
+            
         }
 
         [Theory]
