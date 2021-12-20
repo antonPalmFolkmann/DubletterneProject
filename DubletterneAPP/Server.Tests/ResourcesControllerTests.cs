@@ -46,6 +46,23 @@ public class ResourcesControllerTests
         // Then
         Assert.Equal(expected, actual);
     }
+
+    [Fact]
+    public async Task Get_given_User_returns_Resources_from_that_User()
+    {
+        // Given
+        var logger = new Mock<ILogger<ResourcesController>>();
+        var expected = Array.Empty<ResourceDTO>();
+        var repository = new Mock<IResourceRepository>();
+        repository.Setup(m => m.ReadAllByAuthorAsync("test")).ReturnsAsync(expected);
+        var controller = new ResourcesController(logger.Object, repository.Object);
+    
+        // When
+        var actual = await controller.Get("test");
+        
+        // Then
+        Assert.Equal(expected, actual);
+    }
    
     [Fact]
     public async Task Get_given_non_existing_returns_NotFound()
