@@ -85,8 +85,6 @@ else
         var parameter = "Resource";
         if (input == null || input == "")
         {
-            var reeee = await Http.GetStringAsync($"api/Search/{parameter}");
-            System.Console.WriteLine(reeee);
             resources = await Http.GetFromJsonAsync<ResourceDTO[]>($"api/Search/{parameter}");
         }
         else

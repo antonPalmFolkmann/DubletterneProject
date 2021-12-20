@@ -47,7 +47,7 @@ public class SearchController : ControllerBase
 
         var terms = searchRequestForm.searchTerm.Split(" ");
 
-        return searchRequestForm.searchParam == SearchParam.User ? 
+         return searchRequestForm.searchParam == SearchParam.User ? 
             await getMatches<UserDTO>(terms) : 
             await getMatches<ResourceDTO>(terms);   
     }
@@ -58,11 +58,11 @@ public class SearchController : ControllerBase
 
         foreach (string s in terms)
         {
-            List<T> matches;
+            IEnumerable<T> matches;
 
             matches = typeof(T) == typeof(UserDTO) ? 
-                matches = (List<T>) await _userRepository.Search(s) : 
-                matches = (List<T>) await _resourceRepository.Search(s);
+                matches = (await _userRepository.Search(s)).Cast<T>() : 
+                matches = (await _userRepository.Search(s)).Cast<T>();
 
             var i = SearchScorer.ScoreMatch(s);
 
