@@ -4,16 +4,17 @@ namespace Infrastructure.Tests.Search {
 
     public class MatchSorterTests : IDisposable{
 
+        /*
         [Theory]
         [MemberData(nameof(Data))]
         public void sortMatchesHighestValueFirst_sorts_highest_first(Dictionary<ISearchAble, int> keyValueDictonary, List<ISearchAble> expected){
             //Arrange
 
             //Act
-            //var actual = MatchSorter.SortMatchesKeysHighestScoreFirst(keyValueDictonary);
+            var actual = MatchSorter.SortMatchesKeysHighestScoreFirst(keyValueDictonary);
 
             //Assert
-            //Assert.Equal(expected, actual);
+            Assert.Equal(expected, actual);
         }
 
         public static IEnumerable<object[]> Data =>
@@ -45,7 +46,7 @@ namespace Infrastructure.Tests.Search {
                     }
                 }
             };
-
+            */
         private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)

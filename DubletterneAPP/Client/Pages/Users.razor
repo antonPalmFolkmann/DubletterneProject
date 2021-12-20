@@ -62,6 +62,8 @@ else
         var parameter = "User";
         if (input == null || input == "")
         {
+            var reeee = await Http.GetStringAsync($"api/Search/{parameter}");
+            System.Console.WriteLine(reeee);
             users = await Http.GetFromJsonAsync<UserDTO[]>($"api/Search/{parameter}");
         }
         else

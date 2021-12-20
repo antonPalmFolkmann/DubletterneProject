@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Core
 {
-    public record UserDTO : ISearchAble{
+    public record UserDTO{
         public int Id { get; set; }
         public string? UserName { get; set; }
     }

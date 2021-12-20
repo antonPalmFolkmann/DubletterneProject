@@ -1,9 +1,7 @@
-namespace Infrastructure.Search{
+namespace Infrastructure.Search;
 
-    public class SearchScorer{
-        public static int ScoreMatch(string searchword){
-            return searchword.Length * 10;
-        }
-
-    }
+public class SearchScorer
+{
+    //Can be expanded upon if more complex score is required. (Word type)
+    public static int ScoreMatch(string searchword) => searchword.Length * 10;
 }

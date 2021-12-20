@@ -5,5 +5,4 @@ global using System.Linq;
 global using Microsoft.EntityFrameworkCore.Design;
 global using System.Data;
 global using System.IO;
-global using Infrastructure.Paging;
 global using Infrastructure.Search;

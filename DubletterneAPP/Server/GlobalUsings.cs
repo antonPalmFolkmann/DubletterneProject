@@ -1,7 +1,6 @@
 global using Core;
 global using Infrastructure;
 global using Infrastructure.Search;
-global using Infrastructure.Paging;
 global using Microsoft.AspNetCore.Authentication;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.ResponseCompression;
