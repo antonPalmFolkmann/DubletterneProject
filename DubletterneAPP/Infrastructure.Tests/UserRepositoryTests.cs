@@ -89,6 +89,24 @@ namespace Infrastructure.Tests
         } 
 
         [Fact]
+        public async void ReadAsyncByUserName_returns_a_given_user()
+        {
+            //Given
+            var option = await _repository.ReadAsyncByUsername("TBWL");
+            var user = option.Value;
+
+            //Then
+            Assert.Equal(1, user.Id);
+            Assert.Equal("Harry", user.FirstName);
+            Assert.Equal("Potter", user.LastName);
+            Assert.Equal("TBWL", user.UserName);
+            Assert.Equal(DateTime.Today, user.Created);
+            Assert.Equal(DateTime.Today, DateTime.Today);
+            Assert.Equal("TBWL@diagonal.com", user.Email);
+
+        } 
+
+        [Fact]
         public async void ReadAsyncById_given_id_does_not_exist_returns_None()
         {
             //Given
