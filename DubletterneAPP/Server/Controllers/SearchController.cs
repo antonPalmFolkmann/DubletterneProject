@@ -1,5 +1,3 @@
-using System.Linq;
-using Newtonsoft.Json;
 namespace DubletterneAPP.Server.Controllers;
 
 [Authorize]
@@ -44,86 +42,40 @@ public class SearchController : ControllerBase
 
         var searchRequestForm = new SearchRequestForm(searchParameter, _searchTerm);
 
-        if (!SearchValidater.ValidateSearchTermCharacters(searchRequestForm.searchTerm))
-        {
+        if (!SearchValidater.ValidateSearchTermCharacters(searchRequestForm.searchTerm)) 
             throw new ArgumentException("Search Term is not valid, contains invalid characters.");
-        }
 
         var terms = searchRequestForm.searchTerm.Split(" ");
 
-        if (searchRequestForm.searchParam == SearchParam.User)
-        {
-            return await getUserMatches(terms);
-        }
-        else
-        {
-            return await getResourceMatches(terms);
-        }
-
-        
-        //var z = PagedList<ISearchAble>.ToPagedList(orderedList, searchRequestForm.PageNumber, searchRequestForm.PageSize);
-        //Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(z.MetaData));
-        //return Ok(orderedList.ToArray());
+        return searchRequestForm.searchParam == SearchParam.User ? 
+            await getMatches<UserDTO>(terms) : 
+            await getMatches<ResourceDTO>(terms);   
     }
 
-    private async Task<IActionResult> getResourceMatches(string[] terms)
+    private async Task<IActionResult> getMatches<T>(string[] terms) where T : notnull
     {
-        var matchesWithScore = new Dictionary<ResourceDTO, int>();
+        var matchesWithScore = new Dictionary<T, int>();
 
         foreach (string s in terms)
         {
-            var matches = new List<ResourceDTO>();
-            var n = await _resourceRepository.Search(s);
-            matches = n.ToList<ResourceDTO>();
+            List<T> matches;
+
+            matches = typeof(T) == typeof(UserDTO) ? 
+                matches = (List<T>) await _userRepository.Search(s) : 
+                matches = (List<T>) await _resourceRepository.Search(s);
+
             var i = SearchScorer.ScoreMatch(s);
 
             foreach (var match in matches)
             {
                 if (matchesWithScore.ContainsKey(match))
-                {
                     matchesWithScore[match] += i;
-                }
                 else
-                {
                     matchesWithScore.Add(match, i);
-                }
             }
         }
 
-        var orderedList = MatchSorter.SortMatchesKeysHighestScoreFirst(matchesWithScore);
-        foreach (var item in orderedList)
-        {
-            System.Console.WriteLine(item);
-        }
-
-        return Ok(orderedList.ToArray());
-    }
-
-    private async Task<IActionResult> getUserMatches(string[] terms)
-    {
-        var matchesWithScore = new Dictionary<UserDTO, int>();
-
-        foreach (string s in terms)
-        {
-            var matches = new List<UserDTO>();
-            var n = await _userRepository.Search(s);
-            matches = n.ToList<UserDTO>();
-            var i = SearchScorer.ScoreMatch(s);
-
-            foreach (var match in matches)
-            {
-                if (matchesWithScore.ContainsKey(match))
-                {
-                    matchesWithScore[match] += i;
-                }
-                else
-                {
-                    matchesWithScore.Add(match, i);
-                }
-            }
-        }
-
-        var orderedList = MatchSorter.SortMatchesKeysHighestScoreFirst(matchesWithScore);
+        var orderedList = MatchSorter<T>.SortMatchesKeysHighestScoreFirst(matchesWithScore);
 
         return Ok(orderedList.ToArray());
     }

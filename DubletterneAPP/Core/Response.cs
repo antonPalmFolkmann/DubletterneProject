@@ -1,12 +1,10 @@
-namespace Core
+namespace Core;
+public enum Response
 {
-    public enum Response
-    {
-        Created,
-        Updated,
-        Deleted,
-        NotFound,
-        BadRequest,
-        Conflict
-    }
+    Created,
+    Updated,
+    Deleted,
+    NotFound,
+    BadRequest,
+    Conflict
 }

@@ -1,15 +1,11 @@
-
-
-namespace Infrastructure
+namespace Infrastructure;
+public class TextParagraph
 {
-    public class TextParagraph
-    {
-        public int Id { get; set; }
-        public string Paragraph { get; set; }
+    public int Id { get; set; }
+    public string Paragraph { get; set; }
 
-        public TextParagraph(string paragraph)
-        {
-            Paragraph = paragraph;
-        }
+    public TextParagraph(string paragraph)
+    {
+        Paragraph = paragraph;
     }
 }
