@@ -22,7 +22,7 @@
             <InputTextArea @bind-Value="TextParagraphs" @ref="descInput" class="form-control" rows="5" @onkeyup="@(() => @descChanged = true)" />
         </div>
         <div class="form-group">
-            <label for="Image URL">Image URL</label>
+            <label for="Image URL">Image/Youtube URL</label>
             <InputText id="ImageUrl" @bind-Value="resource.ImageUrl" class="form-control" @onkeyup="@(() => @imgUrlChanged = true)" />
         </div>
         <div class="form-group">
@@ -68,7 +68,6 @@
             oldImageUrl = resource.ImageUrl;
             oldTextParagraph = TextParagraphs;
         }
-
         await base.OnParametersSetAsync();
     }
 

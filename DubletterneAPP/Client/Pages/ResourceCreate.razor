@@ -22,7 +22,7 @@
         <InputTextArea @bind-Value="TextParagraphs" class="form-control" rows="5" />
     </div>
     <div class="form-group">
-        <label for="Image URL">Image URL</label>
+        <label for="Image URL">Image/Youtube URL</label>
         <InputText id="ImageUrl" @bind-Value="resource.ImageUrl" class="form-control" />
     </div>
     <div class="form-group">
@@ -54,8 +54,16 @@
         set => resource.TextParagraphs = value.Split(Environment.NewLine).Select(p => p.Trim()).Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
     }
 
+    private string EmbedYoutubeLink(string input) {
+        var res = input.Split("=");
+        var embeddedUrl = "https://www.youtube.com/embed/"+res[1];
+        return embeddedUrl;
+    }
+
     private async Task HandleValidSubmit()
     {
+        if(resource.ImageUrl.ToLower().Contains("youtube") && !resource.ImageUrl.ToLower().Contains("embed"))
+            resource.ImageUrl = EmbedYoutubeLink(resource.ImageUrl);
         var response = await Http.PostAsJsonAsync("api/Resources", resource);
 
         if (response.IsSuccessStatusCode)

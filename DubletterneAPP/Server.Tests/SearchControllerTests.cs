@@ -1,5 +1,4 @@
 using System.IO;
-using Infrastructure.Search;
 
 namespace Server.Tests.Controllers;
 
