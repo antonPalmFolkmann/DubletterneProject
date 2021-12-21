@@ -41,7 +41,14 @@ else
         {
             <tr>
                 <td>
-                    <img class="resource-img-search" src="@resource.ImageUrl" alt=""> 
+                    @if (@resource.ImageUrl.ToLower().Contains("youtube"))
+                    {
+                        <img class="resource-img-search" src="https://www.roadtovr.com/wp-content/uploads/2015/03/youtube-logo2.jpg" alt="">
+                    }
+                    else
+                    {
+                        <img class="resource-img-search" src="@resource.ImageUrl" alt="">
+                    }
                 </td>
                 <td class="align-middle">
                     @resource.Title
