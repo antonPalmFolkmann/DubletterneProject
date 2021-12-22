@@ -7,7 +7,7 @@ It was created by Dubletterne:
     - Anton Palm Folkmann: anpf@itu.dk
     - Frederik Thomsen: fret@itu.dk
     - Nicklas Crawley Jørgensen: ncjo@itu.dk
-    - Nicklas Oliver Askjær: anpf@itu.dk
+    - Nicklas Oliver Askjær: nias@itu.dk
 
 Run to start:
 .\Start-Application.ps1
